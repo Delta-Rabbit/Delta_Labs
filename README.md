@@ -1,75 +1,110 @@
-# React + TypeScript + Vite
+# Delta Labs 🌐🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![GitHub repo size](https://img.shields.io/github/repo-size/Delta-Rabbit/Delta_Labs?color=blue&style=flat-square)
+![GitHub last commit](https://img.shields.io/github/last-commit/Delta-Rabbit/Delta_Labs?color=green&style=flat-square)
+![GitHub license](https://img.shields.io/github/license/Delta-Rabbit/Delta_Labs?color=orange&style=flat-square)
+![GitHub issues](https://img.shields.io/github/issues/Delta-Rabbit/Delta_Labs?color=red&style=flat-square)
 
-Currently, two official plugins are available:
+**Delta Labs** is an interactive web platform designed to explore AI-powered features, short video feeds, and modern user experiences. Built with **React**, **Tailwind CSS**, and **Vite**, it demonstrates modular architecture, responsive design, and seamless UI interactions.  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### Core Functionality
+- **Short Video Feed**: Auto-playing, scrollable video feed with like, comment, and share interactions.  
+- **AI Bot Modal**: Chat with an AI-powered assistant for interactive guidance.  
+- **Authentication**: Login and Sign-up modals with social login options.  
+- **Language Selector**: Multi-language support with a searchable dropdown.  
 
-Note: This will impact Vite dev & build performances.
+### UI & UX
+- Fully responsive layout with sticky top navigation.  
+- Smooth scrolling, snapping, and animated transitions.  
+- Interactive icons with visual feedback for user actions.  
 
-## Expanding the ESLint configuration
+### Technical Highlights
+- Modular architecture: `Common`, `Modules`, `Contexts`, `Hooks`, `Libs`, `Utils`.  
+- TypeScript support for strict typing and maintainability.  
+- Tailwind CSS for rapid styling and theming.  
+- Vite-powered development for blazing-fast builds.  
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🗂 Folder Structure
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+public/
+└── assets/       # Images, videos, icons
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+src/
+├── Common/       # Shared UI components
+│   └── Landing_page/
+│       ├── components/
+│       └── pages/
+├── contexts/     # React contexts for state management
+├── hooks/        # Custom React hooks
+├── libs/         # External libraries & helpers
+├── modules/      # Feature-specific modules
+├── types/        # TypeScript types
+├── utils/        # Utility functions
+├── App.css
+├── App.tsx
+├── index.css
+└── main.tsx
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+````
+
+---
+
+## ⚡ Tech Stack
+
+![React](https://img.shields.io/badge/React-18-blue?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-4.9-blue?style=flat-square&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v3-blue?style=flat-square&logo=tailwind-css)
+![Vite](https://img.shields.io/badge/Vite-4.4-purple?style=flat-square&logo=vite)
+
+- **React 18** – Component-based UI  
+- **TypeScript** – Strong typing & maintainability  
+- **Tailwind CSS v3** – Utility-first styling  
+- **Vite** – Fast bundling and dev server  
+- **GitHub** – Version control and collaboration  
+
+---
+
+## 📦 Getting Started
+
+### Install dependencies
+```bash
+npm install
+````
+
+### Start the development server
+
+```bash
+npm run dev
 ```
+
+Then open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### Build for production
+
+```bash
+npm run build
+```
+
+---
+
+## 🛠 Future Plans
+
+* AI integration with backend NLP services
+* User profiles and video recommendations
+* Dark mode and theme customization
+* Push notifications for live events
+'
+'
+'
+
+---
+
+> “Innovate, interact, and integrate AI into the future.” 🌟
