@@ -1,8 +1,8 @@
 import React from "react";
-import LandingPage from "./Common/Landing_page/pages/LandingPage";
+import WorkingAuthTest from "./WorkingAuthTest";
 
 function App() {
-  return <LandingPage />;
+  return <WorkingAuthTest />;
 }
 
 export default App;
