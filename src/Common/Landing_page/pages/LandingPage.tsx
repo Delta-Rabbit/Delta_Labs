@@ -10,7 +10,7 @@ import SignUpModal from '../components/SignUpModal';
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col h-screen bg-black text-white">
+    <div className="flex flex-col h-screen bg-D9D9D9 text-white">
       <TopBar />
       <div className="flex flex-1 overflow-hidden">
         <LeftSidebar />
