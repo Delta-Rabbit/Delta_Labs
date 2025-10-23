@@ -98,9 +98,7 @@ npm run build
 ## 🛠 Future Plans
 
 * AI integration with backend NLP services
-* User profiles and video recommendations
-* Dark mode and theme customization
-* Push notifications for live events
+* video recommendations, AI Automation
 '
 '
 '
