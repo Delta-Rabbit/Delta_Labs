@@ -1,6 +1,29 @@
-export default function AddToWishListButton() {
+interface AddToWishListButtonProps {
+  className?: string
+}
+
+export default function AddToWishListButton({ className }: AddToWishListButtonProps) {
   return (
-    <button className="flex-1 bg-[#174A5F] hover:bg-[#1a5a73] text-white font-poppins font-medium py-3 px-4 rounded-lg transition-colors">
+    <button
+      className={`
+        flex-1
+        text-[#174A5F]
+        transition-all
+        duration-300
+        hover:bg-[#d9d9d9]
+        whitespace-nowrap
+        ${className || ""}
+      `}
+      style={{
+        backgroundColor: "#E9E9E9",
+        fontFamily: "Roboto, sans-serif",
+        fontWeight: 600,
+        fontSize: "12px",
+        padding: "10px 25px",
+        clipPath: "polygon(20% 0, 100% 0, 80% 100%, 0% 100%)",
+        border: "none",
+      }}
+    >
       ADD TO WISH LIST
     </button>
   )
