@@ -3,7 +3,7 @@
 import TopBar from '../components/TopBar';
 import LeftSidebar from '../components/LeftSidebar';
 import RightSidebar from '../components/RightSidebar';
-import ShortVideo from '../components/ShortVideo';
+import VideoCard from '../components/VideoCard';
 import AIBotModal from '../components/AIBotModal';
 import LoginModal from '../components/LoginModal';
 import SignUpModal from '../components/SignUpModal';
@@ -16,8 +16,8 @@ export default function LandingPage() {
         <LeftSidebar />
         <main className="flex-1 flex justify-center items-center overflow-auto p-4 relative">
           <div className="absolute inset-0 bg-black/50 z-0"></div>
-          <div className="relative z-10 w-full h-full flex justify-center items-center">
-            <ShortVideo />
+          <div className="relative z-10">
+            <VideoCard />
           </div>
         </main>
         <RightSidebar />
