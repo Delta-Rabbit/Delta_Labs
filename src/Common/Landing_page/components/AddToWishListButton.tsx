@@ -6,7 +6,6 @@ export default function AddToWishListButton({ className }: AddToWishListButtonPr
   return (
     <button
       className={`
-        flex-1
         text-[#174A5F]
         transition-all
         duration-300
@@ -15,6 +14,8 @@ export default function AddToWishListButton({ className }: AddToWishListButtonPr
         ${className || ""}
       `}
       style={{
+        width: "200px",
+        height: "50px",
         backgroundColor: "#E9E9E9",
         fontFamily: "Roboto, sans-serif",
         fontWeight: 600,

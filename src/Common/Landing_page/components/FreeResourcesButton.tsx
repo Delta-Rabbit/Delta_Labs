@@ -6,7 +6,6 @@ export default function FreeResourcesButton({ className }: FreeResourcesButtonPr
   return (
     <button
       className={`
-        flex-1
         text-[#174A5F]
         transition-all
         duration-300
@@ -16,6 +15,8 @@ export default function FreeResourcesButton({ className }: FreeResourcesButtonPr
         ${className || ""}
       `}
       style={{
+        width: "200px",
+        height: "50px",
         backgroundColor: "#C6C6C6",
         fontFamily: "Roboto, sans-serif",
         fontWeight: 600,

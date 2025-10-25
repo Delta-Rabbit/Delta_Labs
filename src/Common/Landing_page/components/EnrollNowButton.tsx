@@ -6,7 +6,6 @@ export default function EnrollNowButton({ className }: EnrollNowButtonProps) {
   return (
     <button
       className={`
-        flex-1
         bg-[#174A5F]
         text-white
         font-poppins
@@ -18,6 +17,8 @@ export default function EnrollNowButton({ className }: EnrollNowButtonProps) {
         ${className || ""}
       `}
       style={{
+        width: "183px",
+        height: "50px",
         clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0% 100%)',
       }}
     >
