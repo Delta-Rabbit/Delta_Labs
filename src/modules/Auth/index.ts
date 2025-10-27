@@ -23,13 +23,7 @@ export {
   LoginForm,
   RegisterForm,
   ForgotPasswordForm,
-} from './components/forms/AuthForms';
-
-// Professional Forms - 100% Theme Integration
-export {
-  ProfessionalLoginForm,
-  ProfessionalRegisterForm,
-} from './components/forms/ProfessionalAuthForms';
+} from './components/forms';
 
 // Modals
 export {
@@ -38,12 +32,6 @@ export {
   useAuthModal,
 } from './components/modals/AuthModal';
 
-// Professional Modals - 100% Theme Integration
-export {
-  ProfessionalAuthModal,
-  ProfessionalAuthModalManager,
-  useProfessionalAuthModal,
-} from './components/modals/ProfessionalAuthModal';
 
 // Social Auth
 export {
@@ -111,22 +99,4 @@ export {
 // DEFAULT EXPORT
 // ============================================================================
 
-export default {
-  // Context
-  AuthProvider,
-  useAuth,
-  
-  // Components
-  LoginForm,
-  RegisterForm,
-  ForgotPasswordForm,
-  AuthModal,
-  AuthModalManager,
-  SocialAuthSection,
-  
-  // Utilities
-  validateForm,
-  calculatePasswordStrength,
-  isValidEmail,
-  isValidUsername,
-};
+// All exports are available as named exports above

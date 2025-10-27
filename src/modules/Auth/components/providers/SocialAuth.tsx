@@ -4,14 +4,14 @@
  */
 
 import React from 'react';
-import { DeltaButton } from '../../../../components/theme/ThemeComponents';
-import { SocialAuthProvider } from '../types';
+import { DeltaButton } from '../../../../components/theme';
+import type { SocialAuthProvider } from '../../types';
 
 // ============================================================================
 // SOCIAL AUTH PROVIDER CONFIGURATION
 // ============================================================================
 
-export const socialAuthProviders: SocialAuthProvider[] = [
+const socialAuthProviders: SocialAuthProvider[] = [
   {
     name: 'Google',
     icon: '/assets/icons/google.svg',
@@ -62,7 +62,7 @@ interface SocialAuthButtonProps {
   variant?: 'default' | 'compact';
 }
 
-export const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({
+const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({
   provider,
   onClick,
   disabled = false,
@@ -145,7 +145,7 @@ interface SocialAuthGridProps {
   providers?: SocialAuthProvider[];
 }
 
-export const SocialAuthGrid: React.FC<SocialAuthGridProps> = ({
+const SocialAuthGrid: React.FC<SocialAuthGridProps> = ({
   onProviderClick,
   disabled = false,
   size = 'md',
@@ -162,7 +162,7 @@ export const SocialAuthGrid: React.FC<SocialAuthGridProps> = ({
             disabled={disabled}
             className="
               w-12 h-12 flex items-center justify-center
-              border border-border-primary rounded-lg
+              border border-border-primary rounded-full
               bg-surface-primary hover:bg-surface-secondary
               delta-transition
               disabled:opacity-50 disabled:cursor-not-allowed
@@ -221,7 +221,7 @@ interface SocialAuthDividerProps {
   text?: string;
 }
 
-export const SocialAuthDivider: React.FC<SocialAuthDividerProps> = ({
+const SocialAuthDivider: React.FC<SocialAuthDividerProps> = ({
   text = 'Or continue with',
 }) => {
   return (
@@ -252,7 +252,7 @@ interface SocialAuthSectionProps {
   providers?: SocialAuthProvider[];
 }
 
-export const SocialAuthSection: React.FC<SocialAuthSectionProps> = ({
+const SocialAuthSection: React.FC<SocialAuthSectionProps> = ({
   onProviderClick,
   disabled = false,
   size = 'md',
@@ -288,7 +288,7 @@ interface SocialAuthModalProps {
   subtitle?: string;
 }
 
-export const SocialAuthModal: React.FC<SocialAuthModalProps> = ({
+const SocialAuthModal: React.FC<SocialAuthModalProps> = ({
   isOpen,
   onClose,
   onProviderClick,

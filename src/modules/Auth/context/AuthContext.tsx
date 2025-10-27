@@ -4,15 +4,12 @@
  */
 
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
-import { 
+import type { 
   AuthState, 
-  AuthContextValue, 
   User, 
   LoginCredentials, 
-  RegisterData,
-  AuthResponse,
-  ApiError 
-} from './types';
+  RegisterData
+} from '../types';
 
 // ============================================================================
 // AUTH ACTIONS

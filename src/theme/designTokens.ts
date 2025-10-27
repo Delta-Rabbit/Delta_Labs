@@ -243,14 +243,15 @@ export const spacing = {
 
 export const borderRadius = {
   none: '0',
-  sm: '0.125rem',   // 2px
-  base: '0.25rem',  // 4px
-  md: '0.375rem',   // 6px
-  lg: '0.5rem',     // 8px
-  xl: '0.75rem',    // 12px
-  '2xl': '1rem',    // 16px
-  '3xl': '1.5rem',  // 24px
-  full: '9999px',
+  xs: '0.125rem',      // 2px - Small elements, badges
+  sm: '0.25rem',       // 4px - Buttons, small cards
+  base: '0.375rem',    // 6px - Default for most components
+  md: '0.5rem',        // 8px - Cards, modals
+  lg: '0.75rem',       // 12px - Large cards, panels
+  xl: '1rem',          // 16px - Hero sections, large panels
+  '2xl': '1.5rem',     // 24px - Special containers
+  '3xl': '2rem',       // 32px - Large containers
+  full: '9999px',      // Fully rounded
 } as const;
 
 // ============================================================================
@@ -259,13 +260,17 @@ export const borderRadius = {
 
 export const shadows = {
   none: 'none',
-  sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-  base: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-  md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-  lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-  xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-  '2xl': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
-  inner: 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
+  xs: '0 1px 2px 0 rgb(0 0 0 / 0.05)',                    // Subtle elevation
+  sm: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',  // Small elevation
+  base: '0 2px 4px -1px rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)', // Default elevation
+  md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',  // Medium elevation
+  lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)', // Large elevation
+  xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)', // Extra large elevation
+  '2xl': '0 25px 50px -12px rgb(0 0 0 / 0.25)',          // Maximum elevation
+  inner: 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',          // Inset shadow
+  focus: '0 0 0 3px rgb(23 74 95 / 0.1)',                // Focus ring shadow
+  error: '0 0 0 3px rgb(239 68 68 / 0.1)',               // Error state shadow
+  success: '0 0 0 3px rgb(34 197 94 / 0.1)',              // Success state shadow
 } as const;
 
 // ============================================================================
@@ -324,6 +329,41 @@ export const animations = {
 } as const;
 
 // ============================================================================
+// ICON TOKENS
+// ============================================================================
+
+export const icons = {
+  size: {
+    xs: '0.75rem',      // 12px - Small icons, inline text
+    sm: '1rem',         // 16px - Default icon size
+    base: '1.25rem',   // 20px - Standard UI icons
+    md: '1.5rem',       // 24px - Medium icons, buttons
+    lg: '2rem',         // 32px - Large icons, headers
+    xl: '2.5rem',       // 40px - Extra large icons
+    '2xl': '3rem',      // 48px - Hero icons
+    '3xl': '4rem',      // 64px - Feature icons
+  },
+  strokeWidth: {
+    thin: '1',
+    base: '1.5',        // Default stroke width
+    medium: '2',
+    thick: '2.5',
+  },
+  style: {
+    outline: 'outline', // Default outline style
+    filled: 'solid',    // Filled style
+    duotone: 'duotone', // Two-tone style
+  },
+  animation: {
+    none: 'none',
+    spin: 'spin 1s linear infinite',
+    pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+    bounce: 'bounce 1s infinite',
+    ping: 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
+  },
+} as const;
+
+// ============================================================================
 // COMPONENT TOKENS
 // ============================================================================
 
@@ -378,5 +418,6 @@ export type DesignTokens = {
   breakpoints: typeof breakpoints;
   zIndex: typeof zIndex;
   animations: typeof animations;
+  icons: typeof icons;
   components: typeof components;
 };

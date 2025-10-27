@@ -5,7 +5,9 @@
  */
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { ThemeConfig, ThemeName, ThemeMode, getTheme, generateCSSVariables } from '../theme/themeConfig';
+import type { ThemeConfig, ThemeName } from '../theme/themeConfig';
+import { getTheme, generateCSSVariables } from '../theme/themeConfig';
+import type { ThemeMode } from '../theme/designTokens';
 
 // ============================================================================
 // THEME CONTEXT INTERFACE

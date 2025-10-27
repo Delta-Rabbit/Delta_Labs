@@ -124,6 +124,12 @@ export interface ChangePasswordData {
   confirmPassword: string;
 }
 
+export interface DateOfBirthData {
+  day: string;
+  month: string;
+  year: string;
+}
+
 // ============================================================================
 // AUTH RESPONSE TYPES
 // ============================================================================
@@ -146,7 +152,7 @@ export interface ApiError {
 // AUTH MODAL TYPES
 // ============================================================================
 
-export type AuthModalType = 'login' | 'register' | 'forgot-password' | 'reset-password' | 'verify-email';
+export type AuthModalType = 'login' | 'register' | 'forgot-password' | 'verify-code' | 'create-account' | 'create-password' | 'date-of-birth';
 
 export interface AuthModalProps {
   isOpen: boolean;
@@ -255,31 +261,6 @@ export interface AuthScreenProps {
 // EXPORTS
 // ============================================================================
 
-export type {
-  User,
-  UserPreferences,
-  NotificationSettings,
-  PrivacySettings,
-  UserRole,
-  AuthState,
-  AuthContextValue,
-  LoginCredentials,
-  RegisterData,
-  ForgotPasswordData,
-  ResetPasswordData,
-  ChangePasswordData,
-  AuthResponse,
-  ApiError,
-  AuthModalType,
-  AuthModalProps,
-  ValidationRule,
-  FormValidation,
-  FormErrors,
-  SocialAuthProvider,
-  AuthProviderConfig,
-  UseAuthReturn,
-  UseFormValidationReturn,
-  TokenPayload,
-  AuthStorage,
-  AuthScreenProps,
-};
+// Types are already exported individually above
+
+

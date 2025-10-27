@@ -3,7 +3,7 @@
  * Enterprise-grade form validation utilities
  */
 
-import { ValidationRule, FormValidation, FormErrors } from '../types';
+import type { ValidationRule, FormValidation, FormErrors } from '../types';
 
 // ============================================================================
 // VALIDATION RULES
@@ -334,16 +334,4 @@ export const generateUsernameSuggestion = (firstName: string, lastName: string):
 // EXPORTS
 // ============================================================================
 
-export {
-  validateField,
-  validateForm,
-  hasErrors,
-  getFirstError,
-  sanitizeFormData,
-  createFormData,
-  calculatePasswordStrength,
-  isValidEmail,
-  normalizeEmail,
-  isValidUsername,
-  generateUsernameSuggestion,
-};
+// Functions are already exported individually above

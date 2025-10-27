@@ -4,20 +4,25 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import { DeltaModal } from '../../../../components/theme/ThemeComponents';
+import { DeltaModal, DeltaErrorBanner } from '../../../../components/theme';
 import { 
   LoginForm, 
   RegisterForm, 
-  ForgotPasswordForm 
-} from '../forms/AuthForms';
+  ForgotPasswordForm,
+  CreateAccountForm,
+  CreatePasswordForm
+} from '../forms';
+import { DateOfBirthForm } from '../forms/DateOfBirthForm';
+import { VerificationCodeForm } from '../forms/VerificationCodeForm';
 import { 
   SocialAuthSection 
 } from '../providers/SocialAuth';
-import { 
+import type { 
   AuthModalType, 
   LoginCredentials, 
   RegisterData, 
   ForgotPasswordData,
+  DateOfBirthData,
   SocialAuthProvider 
 } from '../../types';
 import { useAuth } from '../../context/AuthContext';
@@ -49,6 +54,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [forgotPasswordSuccess, setForgotPasswordSuccess] = useState(false);
+  const [showBackButton, setShowBackButton] = useState(false);
+  
+  // Forgot password flow state
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [resendTimer, setResendTimer] = useState(40);
+  const [deliveryMethod, setDeliveryMethod] = useState<'sms' | 'email'>('sms');
 
   const { 
     login, 
@@ -69,6 +81,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setCurrentType(defaultType);
     setError(null);
     setForgotPasswordSuccess(false);
+    setShowBackButton(false);
     clearError();
     onClose();
   }, [defaultType, onClose, clearError]);
@@ -77,6 +90,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setCurrentType(type);
     setError(null);
     setForgotPasswordSuccess(false);
+    setShowBackButton(false);
     clearError();
   }, [clearError]);
 
@@ -87,46 +101,128 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const handleLogin = useCallback(async (credentials: LoginCredentials) => {
     setIsLoading(true);
     setError(null);
+    setShowBackButton(false);
     
     try {
       await login(credentials);
       onSuccess?.(credentials);
       handleClose();
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Login failed');
+      const errorMessage = error instanceof Error ? error.message : 'user name or password is incorrect';
+      setError(errorMessage);
+      setShowBackButton(true);
     } finally {
       setIsLoading(false);
     }
   }, [login, onSuccess, handleClose]);
 
-  const handleRegister = useCallback(async (userData: RegisterData) => {
+  const handleRegister = useCallback(async (userData: any) => {
+    setIsLoading(true);
+    setError(null);
+    setShowBackButton(false);
+    
+    try {
+      // For UI testing: navigate to date-of-birth
+      setCurrentType('date-of-birth');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Registration failed');
+      setShowBackButton(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const handleCreateAccount = useCallback(async (data: any) => {
     setIsLoading(true);
     setError(null);
     
     try {
-      await register(userData);
-      onSuccess?.(userData);
-      handleClose();
+      // For UI testing: navigate to verify-code
+      setCurrentType('verify-code');
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Registration failed');
+      setError(error instanceof Error ? error.message : 'Failed to create account');
     } finally {
       setIsLoading(false);
     }
-  }, [register, onSuccess, handleClose]);
+  }, []);
+
+  const handleCreatePassword = useCallback(async (data: any) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Success - close modal and go to login
+      handleClose();
+      setTimeout(() => setCurrentType('login'), 500);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to create password');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [handleClose]);
 
   const handleForgotPassword = useCallback(async (data: ForgotPasswordData) => {
     setIsLoading(true);
     setError(null);
     
     try {
-      await forgotPassword(data.email);
-      setForgotPasswordSuccess(true);
+      // For UI testing, just navigate to verify-code modal
+      setForgotPasswordEmail(data.email);
+      setCurrentType('verify-code');
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to send reset email');
     } finally {
       setIsLoading(false);
     }
-  }, [forgotPassword]);
+  }, []);
+
+  const handleVerificationCode = useCallback(async (code: string) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      setVerificationCode(code);
+      // For UI testing, navigate to create-password
+      setCurrentType('create-password');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Invalid verification code');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const handleResetPassword = useCallback(async (data: any) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Success - close modal and go to login
+      handleClose();
+      setTimeout(() => setCurrentType('login'), 500);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to reset password');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [handleClose]);
+
+  const handleDateOfBirth = useCallback(async (data: DateOfBirthData) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // For UI testing: navigate to create-account
+      setCurrentType('create-account');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to save date of birth');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   // ============================================================================
   // SOCIAL AUTH HANDLERS
@@ -171,45 +267,25 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     switch (currentType) {
       case 'login':
         return (
-          <div className="space-y-6">
-            <LoginForm
-              onSubmit={handleLogin}
-              isLoading={isLoading}
-              error={error}
-              onSwitchToRegister={() => switchToType('register')}
-              onSwitchToForgotPassword={() => switchToType('forgot-password')}
-            />
-            
-            <SocialAuthSection
-              onProviderClick={handleSocialAuth}
-              disabled={isLoading}
-              size="md"
-              variant="default"
-              showDivider={true}
-              dividerText="Or continue with"
-            />
-          </div>
+          <LoginForm
+            onSubmit={handleLogin}
+            isLoading={isLoading}
+            error={error}
+            onSwitchToRegister={() => switchToType('register')}
+            onSwitchToForgotPassword={() => switchToType('forgot-password')}
+            onSocialAuth={(provider) => handleSocialAuth(provider as any)}
+          />
         );
 
       case 'register':
         return (
-          <div className="space-y-6">
-            <RegisterForm
-              onSubmit={handleRegister}
-              isLoading={isLoading}
-              error={error}
-              onSwitchToLogin={() => switchToType('login')}
-            />
-            
-            <SocialAuthSection
-              onProviderClick={handleSocialAuth}
-              disabled={isLoading}
-              size="md"
-              variant="default"
-              showDivider={true}
-              dividerText="Or continue with"
-            />
-          </div>
+          <RegisterForm
+            onSubmit={handleRegister}
+            isLoading={isLoading}
+            error={error}
+            onSwitchToLogin={() => switchToType('login')}
+            onSocialAuth={(provider) => handleSocialAuth(provider as any)}
+          />
         );
 
       case 'forgot-password':
@@ -220,6 +296,61 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             error={error}
             success={forgotPasswordSuccess}
             onSwitchToLogin={() => switchToType('login')}
+            onSwitchToRegister={() => switchToType('register')}
+            onClose={handleClose}
+          />
+        );
+
+      case 'date-of-birth':
+        return (
+          <div className="space-y-6">
+            <DateOfBirthForm
+              onSubmit={handleDateOfBirth}
+              isLoading={isLoading}
+              error={error}
+              onSwitchToLogin={() => switchToType('login')}
+            />
+            
+            <SocialAuthSection
+              onProviderClick={handleSocialAuth}
+              disabled={isLoading}
+              size="md"
+              variant="icons-only"
+              showDivider={true}
+              dividerText="Or Sign up with"
+            />
+          </div>
+        );
+
+      case 'verify-code':
+        return (
+          <VerificationCodeForm
+            onSubmit={handleVerificationCode}
+            isLoading={isLoading}
+            error={error}
+            resendTimer={0}
+            deliveryMethod={deliveryMethod}
+            onDeliveryMethodChange={setDeliveryMethod}
+          />
+        );
+
+      case 'create-account':
+        return (
+          <CreateAccountForm
+            onSubmit={handleCreateAccount}
+            isLoading={isLoading}
+            error={error}
+            onSwitchToLogin={() => switchToType('login')}
+            onSocialAuth={(provider) => handleSocialAuth(provider as any)}
+          />
+        );
+
+      case 'create-password':
+        return (
+          <CreatePasswordForm
+            onSubmit={handleCreatePassword}
+            isLoading={isLoading}
+            error={error}
           />
         );
 
@@ -239,7 +370,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       case 'register':
         return 'Create Your Account';
       case 'forgot-password':
-        return forgotPasswordSuccess ? 'Check Your Email' : 'Reset Password';
+        return 'Recover your account';
+      case 'verify-code':
+        return 'Insert verification code';
+      case 'create-account':
+        return 'Create Your Account';
+      case 'create-password':
+        return 'Create your account';
+      case 'date-of-birth':
+        return 'Enter your Date of birth';
       default:
         return 'Authentication';
     }
@@ -254,7 +393,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       case 'forgot-password':
         return forgotPasswordSuccess 
           ? 'We\'ve sent you a password reset link.'
-          : 'Enter your email to receive a password reset link.';
+          : 'Learn more and do more';
+      case 'verify-code':
+        return 'Learn more and do more';
+      case 'create-account':
+        return 'Learn more and do more';
+      case 'create-password':
+        return 'Learn more and do more';
+      case 'date-of-birth':
+        return 'Learn more and do more';
       default:
         return '';
     }
@@ -269,17 +416,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       isOpen={isOpen}
       onClose={handleClose}
       title={getModalTitle()}
+      subtitle={getModalSubtitle()}
       size="md"
       closeOnOverlayClick={!isLoading}
+      showBackButton={showBackButton}
+      errorBanner={error ? {
+        message: error,
+        type: 'error',
+        onClose: () => {
+          setError(null);
+          setShowBackButton(false);
+        }
+      } : undefined}
     >
       <div className="space-y-6">
-        {/* Subtitle */}
-        {getModalSubtitle() && (
-          <p className="text-text-secondary text-center">
-            {getModalSubtitle()}
-          </p>
-        )}
-
         {/* Modal Content */}
         {renderModalContent()}
 
@@ -386,8 +536,4 @@ export const useAuthModal = (): AuthModalContextValue => {
 // EXPORTS
 // ============================================================================
 
-export {
-  AuthModal,
-  AuthModalManager,
-  useAuthModal,
-};
+// Components are already exported individually above

@@ -19,7 +19,7 @@ import {
   DeltaBadge,
   DeltaSpinner,
   DeltaThemeToggle 
-} from '../components/theme/ThemeComponents';
+} from '../components/theme';
 
 // ============================================================================
 // EXAMPLE COMPONENT - THEME DEMONSTRATION

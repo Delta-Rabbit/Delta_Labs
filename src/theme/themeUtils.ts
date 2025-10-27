@@ -3,7 +3,7 @@
  * Helper functions and utilities for theme management
  */
 
-import { ThemeConfig, ThemeName } from './themeConfig';
+import type { ThemeConfig } from './themeConfig';
 
 // ============================================================================
 // THEME UTILITIES
@@ -460,19 +460,4 @@ export function compareThemes(theme1: ThemeConfig, theme2: ThemeConfig): {
 // EXPORTS
 // ============================================================================
 
-export {
-  getContrastRatio,
-  hexToRgb,
-  rgbToHex,
-  lightenColor,
-  darkenColor,
-  isLightColor,
-  getBestTextColor,
-  validateTheme,
-  generateThemeVariant,
-  generateCSSCustomProperties,
-  analyzeThemeAccessibility,
-  exportThemeAsCSS,
-  exportThemeAsJSON,
-  compareThemes,
-};
+// Functions are already exported individually above
