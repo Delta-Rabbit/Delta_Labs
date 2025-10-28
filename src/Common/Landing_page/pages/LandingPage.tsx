@@ -3,8 +3,8 @@
 import TopBar from '../components/TopBar';
 import LeftSidebar from '../components/LeftSidebar';
 import RightSidebar from '../components/RightSidebar';
-import VideoCard from '../components/VideoCard';
 import SearchBar from '../components/SearchBar';
+import VideoFeed from '../components/VideoFeed'; 
 import AIBotModal from '../components/AIBotModal';
 import LoginModal from '../components/LoginModal';
 import SignUpModal from '../components/SignUpModal';
@@ -19,14 +19,15 @@ export default function LandingPage() {
 
         <main className="flex-1 flex items-center justify-center relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-black/35 via-black/18 to-black/0 z-0"></div>
+
           <div
             className="absolute z-20"
             style={{
-              top: 10,                 
-              left: '56%',            
-              transform: 'translateX(-50%)', 
-              width: '400px',          
-              maxWidth: '100%',        
+              top: 20,                 
+              left: '50%',             
+              transform: 'translateX(-50%)',
+              width: '400px',
+              maxWidth: '100%',
             }}
           >
             <SearchBar
@@ -35,8 +36,8 @@ export default function LandingPage() {
             />
           </div>
 
-          <div className="relative z-10 flex justify-center items-center h-full">
-            <VideoCard />
+          <div className="relative z-10 flex justify-center items-center h-full w-full">
+            <VideoFeed />
           </div>
         </main>
 
