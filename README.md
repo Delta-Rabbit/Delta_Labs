@@ -13,7 +13,7 @@
 
 ### Core Functionality
 - **Short Video Feed**: Auto-playing, scrollable video feed with like, comment, and share interactions.  
-- **AI Automation
+- **AI Automation**:
 -.
 -.
 -.
