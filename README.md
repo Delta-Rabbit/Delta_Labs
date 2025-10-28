@@ -13,9 +13,10 @@
 
 ### Core Functionality
 - **Short Video Feed**: Auto-playing, scrollable video feed with like, comment, and share interactions.  
-- **AI Bot Modal**: Chat with an AI-powered assistant for interactive guidance.  
-- **Authentication**: Login and Sign-up modals with social login options.  
-- **Language Selector**: Multi-language support with a searchable dropdown.  
+- **AI Automation
+-.
+-.
+-.
 
 ### UI & UX
 - Fully responsive layout with sticky top navigation.  
