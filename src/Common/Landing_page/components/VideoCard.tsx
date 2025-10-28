@@ -3,6 +3,7 @@
 import ShortVideo from './ShortVideo'
 import ButtonRowWithIcon from './ButtonRowWithIcon'
 import VideoInfo from './VideoInfo'
+import VideoActions from './VideoActions'
 
 interface VideoCardProps {
   videoOffsetY?: string
@@ -31,6 +32,17 @@ export default function VideoCard({
         }}
       >
         <ShortVideo />
+
+        <div className="absolute top-[-80px] right-[-20px] h-full flex items-center z-30">
+          <VideoActions
+            likesCount={123}
+            commentsCount={45}
+            sharesCount={12}
+            onLike={() => console.log('Liked!')}
+            onComment={() => console.log('Comment clicked')}
+            onShare={() => console.log('Share clicked')}
+          />
+        </div>
       </div>
 
       <div
