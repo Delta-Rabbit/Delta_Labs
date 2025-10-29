@@ -1,15 +1,21 @@
 'use client';
 
+import { useState } from 'react';
 import TopBar from '../components/TopBar';
 import LeftSidebar from '../components/LeftSidebar';
 import RightSidebar from '../components/RightSidebar';
 import SearchBar from '../components/SearchBar';
-import VideoFeed from '../components/VideoFeed'; 
+import VideoFeed from '../components/VideoFeed';
+import AudioPlayer from '../components/AudioPlayer';
+import BotChat from '../components/BotChat';
+import SimulationCalculator from '../components/SimulationCalculator';
 import AIBotModal from '../components/AIBotModal';
 import LoginModal from '../components/LoginModal';
 import SignUpModal from '../components/SignUpModal';
 
 export default function LandingPage() {
+  const [currentFeed, setCurrentFeed] = useState<'video' | 'audio' | 'bot' | 'simulator'>('video');
+
   return (
     <div className="flex flex-col h-screen bg-D9D9D9 text-white">
       <TopBar />
@@ -23,8 +29,8 @@ export default function LandingPage() {
           <div
             className="absolute z-20"
             style={{
-              top: 20,                 
-              left: '50%',             
+              top: 20,
+              left: '50%',
               transform: 'translateX(-50%)',
               width: '400px',
               maxWidth: '100%',
@@ -37,11 +43,14 @@ export default function LandingPage() {
           </div>
 
           <div className="relative z-10 flex justify-center items-center h-full w-full">
-            <VideoFeed />
+            {currentFeed === 'video' && <VideoFeed />}
+            {currentFeed === 'audio' && <AudioPlayer />}
+            {currentFeed === 'bot' && <BotChat />}
+            {currentFeed === 'simulator' && <SimulationCalculator />}
           </div>
         </main>
 
-        <RightSidebar />
+        <RightSidebar onSelectFeed={(feed) => setCurrentFeed(feed)} />
       </div>
 
       <AIBotModal />
