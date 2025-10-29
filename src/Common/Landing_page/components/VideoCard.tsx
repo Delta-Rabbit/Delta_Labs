@@ -33,11 +33,11 @@ export default function VideoCard({
       >
         <ShortVideo />
 
-        <div className="absolute top-[-80px] right-[-20px] h-full flex items-center z-30">
+        <div className="absolute top-[-60px] right-[-90px] h-full flex items-center z-30">
           <VideoActions
-            likesCount={123}
-            commentsCount={45}
-            sharesCount={12}
+            likesCount={0}
+            commentsCount={0}
+            sharesCount={0}
             onLike={() => console.log('Liked!')}
             onComment={() => console.log('Comment clicked')}
             onShare={() => console.log('Share clicked')}
