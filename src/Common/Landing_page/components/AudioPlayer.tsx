@@ -1,17 +1,32 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import ButtonRowWithIcon from './ButtonRowWithIcon'
+import VideoInfo from './VideoInfo'
+import VideoActions from './VideoActions'
 
 interface AudioPlayerProps {
   src?: string
   posterSrc?: string
   className?: string
+  audioOffsetY?: string
+  audioOffsetX?: string
+  buttonsOffsetY?: string
+  buttonsOffsetX?: string
+  infoOffsetY?: string
+  infoOffsetX?: string
 }
 
 export default function AudioPlayer({
   src = '/assets/audio/audio1.mp3',
   posterSrc = '/assets/images/AudioPlayerImage.png',
   className = '',
+  audioOffsetY = "58px",
+  audioOffsetX = "0px",
+  buttonsOffsetY = "65px",
+  buttonsOffsetX = "35px",
+  infoOffsetY = "40px",
+  infoOffsetX = "0px",
 }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const progressRef = useRef<HTMLInputElement | null>(null)
@@ -19,6 +34,7 @@ export default function AudioPlayer({
   const [duration, setDuration] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
   const [seeking, setSeeking] = useState(false)
+  const [playbackRate, setPlaybackRate] = useState(1)
 
   useEffect(() => {
     const audio = audioRef.current
@@ -82,21 +98,69 @@ export default function AudioPlayer({
 
   const handleSeekStart = () => setSeeking(true)
 
+  const skipForward = () => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.currentTime = Math.min(audio.currentTime + 10, duration)
+  }
+
+  const skipBackward = () => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.currentTime = Math.max(audio.currentTime - 10, 0)
+  }
+
+  const togglePlaybackRate = () => {
+    const audio = audioRef.current
+    if (!audio) return
+    const newRate = playbackRate === 1 ? 1.5 : 1
+    setPlaybackRate(newRate)
+    audio.playbackRate = newRate
+  }
+
+  const CcIcon = (props: any) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512" {...props}>
+      <path fill="currentColor" d="M472 64H40a24.028 24.028 0 0 0-24 24v336a24.028 24.028 0 0 0 24 24h432a24.028 24.028 0 0 0 24-24V88a24.028 24.028 0 0 0-24-24Zm-8 352H48V96h416Z"></path>
+      <path fill="currentColor" d="M184 344a87.108 87.108 0 0 0 54.484-18.891l-19.825-25.119A55.41 55.41 0 0 1 184 312a56 56 0 0 1 0-112a55.41 55.41 0 0 1 34.659 12.01l19.825-25.119A87.108 87.108 0 0 0 184 168a88 88 0 0 0 0 176Zm163.429 0a87.108 87.108 0 0 0 54.484-18.891l-19.825-25.119A55.414 55.414 0 0 1 347.429 312a56 56 0 0 1 0-112a55.414 55.414 0 0 1 34.659 12.01l19.825-25.119A87.108 87.108 0 0 0 347.429 168a88 88 0 0 0 0 176Z"></path>
+    </svg>
+  )
+
+  const BackwardIcon = (props: any) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
+      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+        <path d="m12 5l-1.104-1.545c-.41-.576-.617-.864-.487-1.13c.13-.268.46-.283 1.12-.314Q11.763 2 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12a9.99 9.99 0 0 1 4-8"></path>
+        <path d="M7.992 11.004C8.52 10.584 9 9.89 9.3 10.02c.3.128.204.552.204 1.212v4.776m6.498-3.408c0-1.38.066-1.752-.198-2.196s-.924-.406-1.584-.406s-1.14-.038-1.458.322c-.39.42-.222 1.2-.27 2.28c.108 1.44-.186 2.58.264 3.06c.324.396.9.336 1.584.348c.68-.008 1.092.024 1.428-.36c.372-.336.192-1.668.234-3.048"></path>
+      </g>
+    </svg>
+  )
+
+  const ForwardIcon = (props: any) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
+      <path fill="currentColor" fillRule="evenodd" d="M1.25 12C1.25 6.063 6.063 1.25 12 1.25a.75.75 0 0 1 .586 1.219l-2 2.5a.75.75 0 0 1-1.172-.938l.903-1.128A9.251 9.251 0 0 0 2.75 12A9.25 9.25 0 1 0 15.7 3.52a.75.75 0 0 1 .6-1.375A10.752 10.752 0 0 1 22.75 12c0 5.937-4.813 10.75-10.75 10.75S1.25 17.937 1.25 12Zm9.075-4.176a.75.75 0 0 1 .425.676v7a.75.75 0 0 1-1.5 0v-5.44l-1.281 1.026a.75.75 0 0 1-.938-1.172l2.5-2a.75.75 0 0 1 .794-.09ZM14.25 9.25a1 1 0 0 0-1 1v3.5a1 1 0 1 0 2 0v-3.5a1 1 0 0 0-1-1Zm-2.5 1a2.5 2.5 0 0 1 5 0v3.5a2.5 2.5 0 0 1-5 0v-3.5Z" clipRule="evenodd"></path>
+    </svg>
+  )
+
   return (
-    <div className={`w-full max-w-[500px] mx-auto flex flex-col items-center ${className}`}>
+    <div className={`flex flex-col items-center justify-center relative h-full ${className}`}>
       <audio ref={audioRef} src={src} preload="metadata" />
 
-      <div className="w-full flex items-center justify-center">
-        <img
-          src={posterSrc}
-          alt="Audio player poster"
-          className="w-full max-w-[200px] object-cover select-none"
-          draggable={false}
-        />
-      </div>
+      <div
+        className="relative"
+        style={{
+          top: audioOffsetY,
+          left: audioOffsetX,
+        }}
+      >
+        <div className="w-full flex items-center justify-center mb-4">
+          <img
+            src={posterSrc}
+            alt="Audio player poster"
+            className="w-24 h-24 object-cover"
+            draggable={false}
+          />
+        </div>
 
-      
-        <div className="w-full mt-5">
+        <div className="w-full mb-4">
           <div className="relative w-full flex items-center">
             <input
               ref={progressRef}
@@ -109,75 +173,146 @@ export default function AudioPlayer({
               onTouchStart={handleSeekStart}
               onMouseUp={handleSeekCommit}
               onTouchEnd={handleSeekCommit}
-              className="w-full h-2 appearance-none bg-transparent cursor-pointer"
+              className="w-full h-1 appearance-none bg-transparent cursor-pointer range-slider"
               style={{
                 WebkitAppearance: 'none',
                 appearance: 'none',
-                background: `linear-gradient(to right, #174A5F ${(currentTime / duration) * 100}%, #174A5F80 ${(currentTime / duration) * 100}%)`,
+                background: `linear-gradient(to right, #174A5F ${(currentTime / duration) * 100}%, #e5e7eb ${(currentTime / duration) * 100}%)`,
                 borderRadius: '9999px',
-                height: '6px',
               }}
             />
-
-            <style jsx>{`
-              input[type='range']::-webkit-slider-thumb {
-                -webkit-appearance: none;
-                appearance: none;
-                width: 10px;
-                height: 16px;
-                background: #174a5f;
-                border-radius: 4px;
-                cursor: pointer;
-                box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
-                transition: all 0.2s ease;
-              }
-
-              input[type='range']::-moz-range-thumb {
-                width: 10px;
-                height: 16px;
-                background: #174a5f;
-                border-radius: 4px;
-                cursor: pointer;
-                border: none;
-                box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
-              }
-
-              input[type='range']::-ms-thumb {
-                width: 15px;
-                height: 16px;
-                background: #174a5f;
-                border-radius: 4px;
-                cursor: pointer;
-              }
-            `}</style>
           </div>
 
           <div className="flex justify-between text-xs text-gray-700 mt-2">
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
           </div>
+        </div>
 
-      <div className="w-full mt-4 px-2">
-        <div className="flex items-center justify-center">
+        <h2 className="text-lg font-semibold text-gray-900 text-center mb-1">
+          Modern Physics
+        </h2>
+
+        <p className="text-sm text-gray-600 text-center mb-4">
+          By Abebe Kebede
+        </p>
+
+        <div className="flex items-center justify-center gap-4 mb-4">
+          <button
+            onClick={togglePlaybackRate}
+            className={`w-8 h-8 flex items-center justify-center text-[#174A5F] opacity-50 hover:opacity-70 transition ${
+              playbackRate === 1.5 ? 'opacity-100' : ''
+            }`}
+            aria-label={`Playback rate ${playbackRate}x`}
+          >
+            <span className="text-xs font-medium">{playbackRate}x</span>
+          </button>
+
+          <button
+            onClick={skipBackward}
+            className="w-8 h-8 flex items-center justify-center text-[#174A5F] hover:text-[#163e4a] transition"
+            aria-label="Skip backward 10 seconds"
+          >
+            <BackwardIcon className="w-4 h-4" />
+          </button>
+
           <button
             onClick={togglePlay}
-            className="w-10 h-10 flex items-center justify-center rounded-md bg-[#174A5F] text-white hover:bg-[#163e4a] transition"
+            className="w-10 h-10 flex items-center justify-center bg-[#174A5F] text-white hover:bg-[#163e4a] transition"
             aria-label={isPlaying ? 'Pause' : 'Play'}
           >
             {isPlaying ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                <rect x="6" y="4" width="4" height="16" fill="currentColor" />
-                <rect x="14" y="4" width="4" height="16" fill="currentColor" />
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
               </svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M5 3l14 9-14 9V3z" />
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
               </svg>
             )}
           </button>
+
+          <button
+            onClick={skipForward}
+            className="w-8 h-8 flex items-center justify-center text-[#174A5F] hover:text-[#163e4a] transition"
+            aria-label="Skip forward 10 seconds"
+          >
+            <ForwardIcon className="w-4 h-4" />
+          </button>
+
+          <button
+            className="w-8 h-8 flex items-center justify-center text-[#174A5F] opacity-50 hover:opacity-70 transition"
+            aria-label="Closed captions"
+          >
+            <CcIcon className="w-3 h-3" />
+          </button>
         </div>
+
+        <div className="absolute top-[100px] right-[-200px] h-full flex items-center z-30">
+          <VideoActions
+            likesCount={0}
+            commentsCount={0}
+            sharesCount={0}
+            onLike={() => console.log('Liked!')}
+            onComment={() => console.log('Comment clicked')}
+            onShare={() => console.log('Share clicked')}
+          />
         </div>
       </div>
+
+      <div
+        className="relative"
+        style={{
+          top: buttonsOffsetY,
+          left: buttonsOffsetX,
+        }}
+      >
+        <ButtonRowWithIcon />
+      </div>
+
+      <div
+        className="relative"
+        style={{
+          top: infoOffsetY,
+          left: infoOffsetX,
+        }}
+      >
+        <VideoInfo
+          profilePic="/assets/images/profile.jpg"
+          name="Abebe Kebede"
+          description="Explore Newton's First Law: Objects stay still or move at constant speed unless a force acts on them."
+          hashtags={['Physics', 'NewtonsFirstLaw']}
+        />
+      </div>
+
+      <style>
+        {`
+          .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            background: #174a5f;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+
+          .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+          }
+
+          .range-slider::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            background: #174a5f;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+          }
+        `}
+      </style>
     </div>
   )
 }

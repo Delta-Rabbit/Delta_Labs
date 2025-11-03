@@ -17,7 +17,7 @@ export default function VideoDetails({
     <div className="flex items-start gap-4 p-4 w-full max-w-[500px]">
       <div className="flex-shrink-0">
         <img
-          src= 'assets/images/profile.png'
+          src='assets/images/profile.png'
           alt={name}
           className="w-12 h-12 rounded-full object-cover"
         />
@@ -29,7 +29,7 @@ export default function VideoDetails({
         <p className="text-black text-sm mt-2">{description}</p>
 
         <div className="flex flex-wrap gap-2 mt-1">
-          {hashtags.map((tag) => (
+          {hashtags?.map((tag) => (
             <span
               key={tag}
               className="text-[#174A5F] text-xs font-medium"
