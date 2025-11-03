@@ -14,6 +14,7 @@ import { Spinner } from './Spinner';
 import { ThemeToggle } from './ThemeToggle';
 import { Checkbox } from './Checkbox';
 import { Radio } from './Radio';
+import { Dropdown } from './Dropdown';
 
 // Export with backward-compatible Delta names
 export { Button as DeltaButton };
@@ -26,6 +27,8 @@ export { Spinner as DeltaSpinner };
 export { ThemeToggle as DeltaThemeToggle };
 export { Checkbox as DeltaCheckbox };
 export { Radio as DeltaRadio };
+export { Dropdown as DeltaDropdown };
+export type { DropdownProps, DropdownOption } from './Dropdown';
 
 // Re-export icon components
 export {

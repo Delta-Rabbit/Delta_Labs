@@ -3,7 +3,8 @@
  * Reusable modal with backdrop, close buttons, and error banners
  */
 
-import * as React from 'react';
+import React from 'react';
+import { createPortal } from 'react-dom';
 import { ArrowLeftIcon, CloseIcon } from '../DeltaIcon';
 
 interface ModalProps {
@@ -39,19 +40,35 @@ export const Modal: React.FC<ModalProps> = ({
     sm: 'max-w-md rounded-lg',
     md: 'max-w-lg rounded-lg',
     lg: 'max-w-2xl rounded-xl',
-    xl: 'max-w-4xl rounded-xl',
-    full: 'max-w-full mx-4 rounded-lg',
+    xl: 'max-w-6xl rounded-xl',
+    full: 'max-w-[95vw] w-full rounded-xl',
   };
   
   if (!isOpen) return null;
   
-  return (
-    <div className="fixed inset-0 z-modal flex items-center justify-center p-4">
+  // Render overlay and modal using portal to ensure they're above everything
+  const modalContent = (
+    <>
+      {/* Full-page blur overlay - covers entire viewport including top header */}
       <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="fixed bg-black/50 backdrop-blur-sm"
+        style={{ 
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: 9999,
+          margin: 0,
+          padding: 0
+        }}
         onClick={closeOnOverlayClick ? onClose : undefined}
       />
-      <div className={`relative bg-surface-primary shadow-xl ${sizeClasses[size]} w-full max-h-[90vh] overflow-hidden`}>
+      {/* Modal container - centered with padding */}
+      <div className="fixed inset-0 flex items-center justify-center p-4" style={{ zIndex: 10000, pointerEvents: 'none' }}>
+        <div className={`relative bg-surface-primary shadow-xl ${sizeClasses[size]} w-full ${size === 'full' ? 'h-[85vh]' : size === 'xl' ? 'max-h-[75vh]' : 'max-h-[90vh]'} overflow-hidden pointer-events-auto ${size === 'full' ? 'flex flex-col' : size === 'xl' ? 'flex flex-col' : ''}`}>
         {/* Header with Back Arrow and Close X - Figma Design */}
         <div className="flex items-center justify-between p-6 pb-0">
           {showBackButton ? (
@@ -112,11 +129,19 @@ export const Modal: React.FC<ModalProps> = ({
         )}
         
         {/* Content */}
-        <div className={`px-3 pt-4 pb-4 overflow-y-auto max-h-[calc(90vh-200px)]`}>
+        <div className={`px-3 pt-4 ${size === 'full' || size === 'xl' ? 'flex-1 overflow-hidden min-h-0 flex flex-col pb-3' : 'pb-4 overflow-y-auto max-h-[calc(90vh-200px)]'}`}>
           {children}
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
+  
+  // Use portal to render at document body level, ensuring it's above everything
+  if (typeof window !== 'undefined') {
+    return createPortal(modalContent, document.body);
+  }
+  
+  return null;
 };
 
