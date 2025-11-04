@@ -6,6 +6,7 @@ import VideoCard from './VideoCard'
 export default function VideoFeed() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
+  const [activeVideoId, setActiveVideoId] = useState<number | null>(0)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const videos = [
@@ -30,10 +31,20 @@ export default function VideoFeed() {
     },
   ]
 
+  useEffect(() => {
+    setActiveVideoId(currentIndex)
+  }, [currentIndex])
+
+  const stopAllVideos = () => {
+    setActiveVideoId(null)
+  }
+
   const handleScroll = (e: WheelEvent) => {
     e.preventDefault()
     if (isAnimating) return
     setIsAnimating(true)
+
+    stopAllVideos()
 
     if (e.deltaY > 0) {
       setCurrentIndex((prev) => (prev + 1) % videos.length) 
@@ -48,6 +59,8 @@ export default function VideoFeed() {
     if (isAnimating) return
     setIsAnimating(true)
 
+    stopAllVideos()
+
     if (e.key === 'ArrowDown') {
       setCurrentIndex((prev) => (prev + 1) % videos.length)
     } else if (e.key === 'ArrowUp') {
@@ -55,6 +68,16 @@ export default function VideoFeed() {
     }
 
     setTimeout(() => setIsAnimating(false), 600)
+  }
+
+  const handleVideoPlay = (videoId: number) => {
+    setActiveVideoId(videoId)
+  }
+
+  const handleVideoPause = (videoId: number) => {
+    if (activeVideoId === videoId) {
+      setActiveVideoId(null)
+    }
   }
 
   useEffect(() => {
@@ -69,6 +92,12 @@ export default function VideoFeed() {
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [currentIndex, isAnimating])
+
+  useEffect(() => {
+    return () => {
+      stopAllVideos()
+    }
+  }, [])
 
   return (
     <div
@@ -91,6 +120,10 @@ export default function VideoFeed() {
             buttonsOffsetX="35px"
             infoOffsetY="-130px"
             infoOffsetX="0px"
+            isActive={activeVideoId === index}
+            onPlay={() => handleVideoPlay(index)}
+            onPause={() => handleVideoPause(index)}
+            onScrollAway={stopAllVideos}
           />
         </div>
       ))}

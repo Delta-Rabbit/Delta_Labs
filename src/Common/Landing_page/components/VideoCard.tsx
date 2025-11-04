@@ -12,6 +12,10 @@ interface VideoCardProps {
   buttonsOffsetX?: string
   infoOffsetY?: string
   infoOffsetX?: string
+  isActive?: boolean
+  onPlay?: () => void
+  onPause?: () => void
+  onScrollAway?: () => void
 }
 
 export default function VideoCard({
@@ -21,6 +25,10 @@ export default function VideoCard({
   buttonsOffsetX = "35px",
   infoOffsetY = "-130px",
   infoOffsetX = "0px",
+  isActive = false,
+  onPlay,
+  onPause,
+  onScrollAway,
 }: VideoCardProps) {
   return (
     <div className="flex flex-col items-center justify-center relative h-full">
@@ -31,7 +39,12 @@ export default function VideoCard({
           left: videoOffsetX,
         }}
       >
-        <ShortVideo />
+        <ShortVideo 
+          isActive={isActive}
+          onPlay={onPlay}
+          onPause={onPause}
+          onScrollAway={onScrollAway}
+        />
 
         <div className="absolute top-[-60px] right-[-90px] h-full flex items-center z-30">
           <VideoActions

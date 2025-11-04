@@ -6,7 +6,7 @@ import LeftSidebar from '../components/LeftSidebar';
 import RightSidebar from '../components/RightSidebar';
 import SearchBar from '../components/SearchBar';
 import VideoFeed from '../components/VideoFeed';
-import AudioPlayer from '../components/AudioPlayer';
+import AudioFeed from '../components/AudioFeed'; 
 import BotChat from '../components/BotChat';
 import SimulationCalculator from '../components/SimulationCalculator';
 import AIBotModal from '../components/AIBotModal';
@@ -29,7 +29,7 @@ export default function LandingPage() {
           <div
             className="absolute z-20"
             style={{
-              top: 20,
+              top: 8,
               left: '50%',
               transform: 'translateX(-50%)',
               width: '400px',
@@ -44,7 +44,7 @@ export default function LandingPage() {
 
           <div className="relative z-10 flex justify-center items-center h-full w-full">
             {currentFeed === 'video' && <VideoFeed />}
-            {currentFeed === 'audio' && <AudioPlayer />}
+            {currentFeed === 'audio' && <AudioFeed />}
             {currentFeed === 'bot' && <BotChat />}
             {currentFeed === 'simulator' && <SimulationCalculator />}
           </div>
