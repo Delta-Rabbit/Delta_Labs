@@ -9,24 +9,32 @@ interface AudioPlayerProps {
   src?: string
   posterSrc?: string
   className?: string
-  audioOffsetY?: string
-  audioOffsetX?: string
+  audioContainerOffsetY?: string
+  audioContainerOffsetX?: string
   buttonsOffsetY?: string
   buttonsOffsetX?: string
   infoOffsetY?: string
   infoOffsetX?: string
+  isActive?: boolean
+  onPlay?: () => void
+  onPause?: () => void
+  onScrollAway?: () => void
 }
 
 export default function AudioPlayer({
   src = '/assets/audio/audio1.mp3',
   posterSrc = '/assets/images/AudioPlayerImage.png',
   className = '',
-  audioOffsetY = "58px",
-  audioOffsetX = "0px",
+  audioContainerOffsetY = "85px",
+  audioContainerOffsetX = "0px",
   buttonsOffsetY = "65px",
   buttonsOffsetX = "35px",
   infoOffsetY = "40px",
   infoOffsetX = "0px",
+  isActive = false,
+  onPlay,
+  onPause,
+  onScrollAway,
 }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const progressRef = useRef<HTMLInputElement | null>(null)
@@ -47,6 +55,7 @@ export default function AudioPlayer({
     const onEnded = () => {
       setIsPlaying(false)
       setCurrentTime(0)
+      onPause?.()
     }
 
     audio.addEventListener('loadedmetadata', onLoaded)
@@ -58,7 +67,18 @@ export default function AudioPlayer({
       audio.removeEventListener('timeupdate', onTime)
       audio.removeEventListener('ended', onEnded)
     }
-  }, [seeking])
+  }, [seeking, onPause])
+
+  useEffect(() => {
+    if (!isActive && isPlaying) {
+      const audio = audioRef.current
+      if (audio) {
+        audio.pause()
+        setIsPlaying(false)
+        onPause?.()
+      }
+    }
+  }, [isActive, isPlaying, onPause])
 
   const togglePlay = async () => {
     const audio = audioRef.current
@@ -67,9 +87,15 @@ export default function AudioPlayer({
       if (isPlaying) {
         audio.pause()
         setIsPlaying(false)
+        onPause?.()
       } else {
+        if (!isActive) {
+          onScrollAway?.()
+        }
+        
         await audio.play()
         setIsPlaying(true)
+        onPlay?.()
       }
     } catch (err) {
       console.warn('Unable to play audio programmatically', err)
@@ -147,8 +173,8 @@ export default function AudioPlayer({
       <div
         className="relative"
         style={{
-          top: audioOffsetY,
-          left: audioOffsetX,
+          top: audioContainerOffsetY,
+          left: audioContainerOffsetX,
         }}
       >
         <div className="w-full flex items-center justify-center mb-4">
@@ -173,7 +199,7 @@ export default function AudioPlayer({
               onTouchStart={handleSeekStart}
               onMouseUp={handleSeekCommit}
               onTouchEnd={handleSeekCommit}
-              className="w-full h-1 appearance-none bg-transparent cursor-pointer range-slider"
+              className="w-full max-w-[320px] h-1 appearance-none bg-transparent cursor-pointer range-slider"
               style={{
                 WebkitAppearance: 'none',
                 appearance: 'none',
@@ -197,37 +223,37 @@ export default function AudioPlayer({
           By Abebe Kebede
         </p>
 
-        <div className="flex items-center justify-center gap-4 mb-4">
+        <div className="flex items-center justify-center gap-6 mb-4">
           <button
             onClick={togglePlaybackRate}
-            className={`w-8 h-8 flex items-center justify-center text-[#174A5F] opacity-50 hover:opacity-70 transition ${
+            className={`w-12 h-10 flex items-center justify-center text-[#174A5F] opacity-50 hover:opacity-70 transition ${
               playbackRate === 1.5 ? 'opacity-100' : ''
             }`}
             aria-label={`Playback rate ${playbackRate}x`}
           >
-            <span className="text-xs font-medium">{playbackRate}x</span>
+            <span className="text-sm font-medium">{playbackRate}x</span>
           </button>
 
           <button
             onClick={skipBackward}
-            className="w-8 h-8 flex items-center justify-center text-[#174A5F] hover:text-[#163e4a] transition"
+            className="w-12 h-10 flex items-center justify-center text-[#174A5F] hover:text-[#163e4a] transition"
             aria-label="Skip backward 10 seconds"
           >
-            <BackwardIcon className="w-4 h-4" />
+            <BackwardIcon className="w-5 h-5" />
           </button>
 
           <button
             onClick={togglePlay}
-            className="w-10 h-10 flex items-center justify-center bg-[#174A5F] text-white hover:bg-[#163e4a] transition"
+            className="w-14 h-14 flex items-center justify-center rounded-md bg-[#174A5F] text-white hover:bg-[#163e4a] transition shadow-lg"
             aria-label={isPlaying ? 'Pause' : 'Play'}
           >
             {isPlaying ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                 <rect x="6" y="4" width="4" height="16" />
                 <rect x="14" y="4" width="4" height="16" />
               </svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M8 5v14l11-7z"/>
               </svg>
             )}
@@ -235,17 +261,17 @@ export default function AudioPlayer({
 
           <button
             onClick={skipForward}
-            className="w-8 h-8 flex items-center justify-center text-[#174A5F] hover:text-[#163e4a] transition"
+            className="w-12 h-10 flex items-center justify-center text-[#174A5F] hover:text-[#163e4a] transition"
             aria-label="Skip forward 10 seconds"
           >
-            <ForwardIcon className="w-4 h-4" />
+            <ForwardIcon className="w-5 h-5" />
           </button>
 
           <button
-            className="w-8 h-8 flex items-center justify-center text-[#174A5F] opacity-50 hover:opacity-70 transition"
+            className="w-12 h-10 flex items-center justify-center text-[#174A5F] opacity-50 hover:opacity-70 transition"
             aria-label="Closed captions"
           >
-            <CcIcon className="w-3 h-3" />
+            <CcIcon className="w-4 h-4" />
           </button>
         </div>
 
@@ -291,10 +317,10 @@ export default function AudioPlayer({
           .range-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 16px;
             background: #174a5f;
-            border-radius: 50%;
+            border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
           }
@@ -304,10 +330,10 @@ export default function AudioPlayer({
           }
 
           .range-slider::-moz-range-thumb {
-            width: 12px;
+            width: 16px;
             height: 12px;
             background: #174a5f;
-            border-radius: 50%;
+            border-radius: 4px;
             cursor: pointer;
             border: none;
           }
