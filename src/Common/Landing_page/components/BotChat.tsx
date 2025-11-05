@@ -10,7 +10,7 @@ interface BotChatProps {
 }
 
 export default function BotChat({
-  textFieldOffsetY = "110px",
+  textFieldOffsetY = "180px",
   textFieldOffsetX = "0px",
   messageOffsetY = "-80px",
   messageOffsetX = "-185px",
