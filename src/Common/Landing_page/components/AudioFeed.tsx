@@ -123,20 +123,6 @@ export default function AudioFeed() {
             transform: `translateY(${(index - currentIndex) * 100}%)`,
           }}
         >
-          <AudioPlayer
-            src={audio.src}
-            posterSrc={audio.posterSrc}
-            audioContainerOffsetY="85px"
-            audioContainerOffsetX="0px"
-            buttonsOffsetY="65px"
-            buttonsOffsetX="35px"
-            infoOffsetY="40px"
-            infoOffsetX="0px"
-            isActive={activeAudioId === index}
-            onPlay={() => handleAudioPlay(index)}
-            onPause={() => handleAudioPause(index)}
-            onScrollAway={stopAllAudio}
-          />
         </div>
       ))}
     </div>
