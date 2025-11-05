@@ -45,11 +45,9 @@ export default function AudioFeed() {
     },
   ]
 
-  // Stop audio when scrolling to a new item
   const stopAllAudio = () => {
     setActiveAudioId(null)
-    // You might need to add a way to communicate with AudioPlayer components
-    // to stop them individually
+    
   }
 
   const handleScroll = (e: WheelEvent) => {
@@ -57,7 +55,6 @@ export default function AudioFeed() {
     if (isAnimating) return
     setIsAnimating(true)
 
-    // Stop current audio before scrolling
     stopAllAudio()
 
     if (e.deltaY > 0) {
@@ -73,7 +70,6 @@ export default function AudioFeed() {
     if (isAnimating) return
     setIsAnimating(true)
 
-    // Stop current audio before scrolling
     stopAllAudio()
 
     if (e.key === 'ArrowDown') {
@@ -108,7 +104,6 @@ export default function AudioFeed() {
     }
   }, [currentIndex, isAnimating])
 
-  // Stop audio when component unmounts
   useEffect(() => {
     return () => {
       stopAllAudio()
