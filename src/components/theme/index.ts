@@ -6,6 +6,7 @@
 // Import components from individual modules
 import { Button } from './Button';
 import { Input } from './Input';
+import { Textarea } from './Textarea';
 import { Card } from './Card';
 import { Modal } from './Modal';
 import { ErrorBanner } from './ErrorBanner';
@@ -19,6 +20,7 @@ import { Dropdown } from './Dropdown';
 // Export with backward-compatible Delta names
 export { Button as DeltaButton };
 export { Input as DeltaInput };
+export { Textarea as DeltaTextarea };
 export { Card as DeltaCard };
 export { Modal as DeltaModal };
 export { ErrorBanner as DeltaErrorBanner };

@@ -67,7 +67,7 @@ export const Modal: React.FC<ModalProps> = ({
         onClick={closeOnOverlayClick ? onClose : undefined}
       />
       {/* Modal container - centered with padding */}
-      <div className="fixed inset-0 flex items-center justify-center p-4" style={{ zIndex: 10000, pointerEvents: 'none' }}>
+      <div className="fixed inset-0 flex items-center justify-center p-6 sm:p-8" style={{ zIndex: 10000, pointerEvents: 'none' }}>
         <div className={`relative bg-surface-primary shadow-xl ${sizeClasses[size]} w-full ${size === 'full' ? 'h-[85vh]' : size === 'xl' ? 'max-h-[75vh]' : 'max-h-[90vh]'} overflow-hidden pointer-events-auto ${size === 'full' ? 'flex flex-col' : size === 'xl' ? 'flex flex-col' : ''}`}>
         {/* Header with Back Arrow and Close X - Figma Design */}
         <div className="flex items-center justify-between p-6 pb-0">
@@ -129,7 +129,7 @@ export const Modal: React.FC<ModalProps> = ({
         )}
         
         {/* Content */}
-        <div className={`px-3 pt-4 ${size === 'full' || size === 'xl' ? 'flex-1 overflow-hidden min-h-0 flex flex-col pb-3' : 'pb-4 overflow-y-auto max-h-[calc(90vh-200px)]'}`}>
+        <div className={`px-6 pt-4 ${size === 'full' || size === 'xl' ? 'flex-1 overflow-hidden min-h-0 flex flex-col pb-3' : 'pb-4 overflow-y-auto max-h-[calc(90vh-200px)]'}`}>
           {children}
         </div>
         </div>

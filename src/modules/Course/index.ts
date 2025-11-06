@@ -15,8 +15,9 @@ export { CourseProvider, useCourse } from './context/CourseContext';
 
 export { default as CoursePage } from './components/CoursePage';
 export { default as CourseLayout } from './components/CourseLayout';
-export { default as FeatureCardGrid } from './components/FeatureCardGrid';
-export { default as FeatureCard } from './components/FeatureCard';
+// Feature-based exports - use feature folders directly
+// export { default as FeatureCardGrid } from './features/dashboard/components/FeatureCardGrid';
+// export { default as FeatureCard } from './features/dashboard/components/FeatureCard';
 
 // ============================================================================
 // TYPE EXPORTS
@@ -45,5 +46,5 @@ export type {
 // ============================================================================
 
 export * from './utils';
-export * from './hooks';
+// Hooks moved to routing/hooks/useCourseNavigation
 
