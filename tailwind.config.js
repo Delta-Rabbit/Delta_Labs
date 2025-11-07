@@ -26,18 +26,18 @@ export default {
           900: '#071A1F',
         },
         
-        // Secondary Colors
+        // Secondary Colors - Based on Figma Design #DCE5E9
         secondary: {
-          50: '#F0F9FF',
-          100: '#E0F2FE',
-          200: '#BAE6FD',
-          300: '#7DD3FC',
-          400: '#38BDF8',
-          500: '#0EA5E9',
-          600: '#0284C7',
-          700: '#0369A1',
-          800: '#075985',
-          900: '#0C4A6E',
+          50: '#F8FAFB',
+          100: '#F1F4F6',
+          200: '#E2E8F0',
+          300: '#CBD5E1',
+          400: '#94A3B8',
+          500: '#DCE5E9', // Main secondary color from Figma
+          600: '#64748B',
+          700: '#475569',
+          800: '#334155',
+          900: '#1E293B',
         },
         
         // Semantic Colors

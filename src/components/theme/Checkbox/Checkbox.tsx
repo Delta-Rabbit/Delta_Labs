@@ -45,7 +45,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   return (
     <div className="w-full">
       {label && (
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1.5">
           <input
             id={inputId}
             type="checkbox"
@@ -57,7 +57,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
             }}
             {...props}
           />
-          <label htmlFor={inputId} className="text-sm text-text-secondary">
+          <label htmlFor={inputId} className="text-sm text-text-primary font-medium cursor-pointer">
             {label}
           </label>
         </div>

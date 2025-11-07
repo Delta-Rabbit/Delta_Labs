@@ -22,15 +22,15 @@ const EnrolledCourseDetailLayout: React.FC = () => {
   const courseId = currentRoute?.params?.courseId as string;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-primary">
       <div className="text-center py-12">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">
+        <h1 className="text-2xl font-bold text-text-primary mb-4 font-primary">
           Enrolled Course Detail - {courseId}
         </h1>
-        <p className="text-gray-600">
+        <p className="text-text-secondary font-primary">
           This is where the enrolled course detail system will be implemented.
         </p>
-        <p className="text-gray-500 text-sm mt-2">
+        <p className="text-text-tertiary text-sm mt-2 font-primary">
           Bottom navigation with 9 features (Course Intro, Q&A, Exercises, etc.) will be added here.
         </p>
       </div>
@@ -39,4 +39,3 @@ const EnrolledCourseDetailLayout: React.FC = () => {
 };
 
 export default EnrolledCourseDetailLayout;
-

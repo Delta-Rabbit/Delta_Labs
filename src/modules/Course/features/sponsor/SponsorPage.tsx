@@ -1,12 +1,14 @@
 /**
  * Delta Labs Sponsor Page
- * Display sponsors and manage sponsor applications
+ * Display sponsors and manage sponsor applications using theme tokens
  */
 
 import React, { useState } from 'react';
 import { useCourseNavigation } from '../../routing/hooks/useCourseNavigation';
 import SearchBar from '../../../../components/SearchBar';
+import { Breadcrumbs } from '../../components/common';
 import SponsorCard from './components/SponsorCard';
+import Tabs from './components/Tabs';
 
 interface Sponsor {
   id: string;
@@ -80,26 +82,30 @@ const SponsorPage: React.FC = () => {
     // You can pass sponsorId and sponsorName to the apply page if needed
   };
 
+  const tabs = [
+    { id: 'sponsors', label: 'Sponsors' },
+    { id: 'applied', label: 'Applied' },
+  ];
+
+  const breadcrumbItems = [
+    {
+      label: 'Course',
+      onClick: () => navigate('/dashboard'),
+    },
+    {
+      label: 'Wishlist',
+      onClick: () => navigate('/wishlist'),
+    },
+    {
+      label: 'Sponsor',
+      isActive: true,
+    },
+  ];
+
   return (
-    <div className="space-y-8 -mt-8 pt-16">
+    <div className="space-y-8 -mt-8 pt-16 font-primary">
       {/* Breadcrumbs */}
-      <div className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="hover:text-gray-900 transition-colors font-medium"
-        >
-          Course
-        </button>
-        <span>/</span>
-        <button
-          onClick={() => navigate('/wishlist')}
-          className="hover:text-gray-900 transition-colors font-medium"
-        >
-          Wishlist
-        </button>
-        <span>/</span>
-        <span className="text-gray-900 font-medium">Sponsor</span>
-      </div>
+      <Breadcrumbs items={breadcrumbItems} />
 
       {/* Search Bar */}
       <div className="w-full max-w-3xl">
@@ -107,28 +113,7 @@ const SponsorPage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-6">
-        <button
-          onClick={() => setActiveTab('sponsors')}
-          className={`text-base font-medium transition-colors pb-2 border-b-2 ${
-            activeTab === 'sponsors'
-              ? 'text-gray-900 border-gray-900'
-              : 'text-gray-500 border-transparent hover:text-gray-700'
-          }`}
-        >
-          Sponsors
-        </button>
-        <button
-          onClick={() => setActiveTab('applied')}
-          className={`text-base font-medium transition-colors pb-2 border-b-2 ${
-            activeTab === 'applied'
-              ? 'text-gray-900 border-gray-900'
-              : 'text-gray-500 border-transparent hover:text-gray-700'
-          }`}
-        >
-          Applied
-        </button>
-      </div>
+      <Tabs tabs={tabs} activeTab={activeTab} onTabChange={(tabId) => setActiveTab(tabId as 'sponsors' | 'applied')} />
 
       {/* Sponsor Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -136,7 +121,7 @@ const SponsorPage: React.FC = () => {
           <SponsorCard
             key={sponsor.id}
             sponsor={sponsor}
-            onApply={() => handleApply(sponsor.id, sponsor.name)}
+            onApply={handleApply}
           />
         ))}
       </div>
@@ -144,7 +129,7 @@ const SponsorPage: React.FC = () => {
       {/* Empty State for Applied Tab */}
       {activeTab === 'applied' && appliedSponsors.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-gray-500">No applied sponsors yet.</p>
+          <p className="text-text-secondary font-primary">No applied sponsors yet.</p>
         </div>
       )}
     </div>
