@@ -6,7 +6,7 @@ import LeftSidebar from '../components/LeftSidebar';
 import RightSidebar from '../components/RightSidebar';
 import SearchBar from '../components/SearchBar';
 import VideoFeed from '../components/VideoFeed';
-import AudioFeed from '../components/AudioFeed'; 
+import AudioFeed from '../components/AudioFeed';
 import BotChat from '../components/BotChat';
 import SimulationCalculator from '../components/SimulationCalculator';
 import AIBotModal from '../components/AIBotModal';
@@ -14,7 +14,7 @@ import LoginModal from '../components/LoginModal';
 import SignUpModal from '../components/SignUpModal';
 
 export default function LandingPage() {
-  const [currentFeed, setCurrentFeed] = useState<'video' | 'audio' | 'bot' | 'simulator'>('video');
+  const [currentFeed, setCurrentFeed] = useState<'video' | 'audio' | 'bot' | 'simulation'>('video'); // ← Changed to 'simulation'
 
   return (
     <div className="flex flex-col h-screen bg-D9D9D9 text-white">
@@ -46,7 +46,7 @@ export default function LandingPage() {
             {currentFeed === 'video' && <VideoFeed />}
             {currentFeed === 'audio' && <AudioFeed />}
             {currentFeed === 'bot' && <BotChat />}
-            {currentFeed === 'simulator' && <SimulationCalculator />}
+            {currentFeed === 'simulation' && <SimulationCalculator />} {/* ← Changed to 'simulation' */}
           </div>
         </main>
 
