@@ -8,14 +8,15 @@ import EnrolledCoursesTable from './EnrolledCoursesTable';
 
 interface EnrolledCoursesListViewProps {
   courses?: any[];
+  onGoToCourse?: (courseId: string, courseTitle?: string) => void;
 }
 
-const EnrolledCoursesListView: React.FC<EnrolledCoursesListViewProps> = ({ courses = [] }) => {
+const EnrolledCoursesListView: React.FC<EnrolledCoursesListViewProps> = ({ courses = [], onGoToCourse }) => {
   const [selectedCourses, setSelectedCourses] = React.useState<number[]>([]);
 
   // Sample data
   const sampleCourses = [
-    { id: 1, name: 'Graphic design', school: 'Haromaya University', progress: '40 of 64 Lessons', rating: 4.8, status: 'enrolled' as const },
+    { id: 1, name: 'Physics', school: 'Haromaya University', progress: '40 of 64 Lessons', rating: 4.8, status: 'enrolled' as const },
     { id: 2, name: 'Graphic design', school: 'Haromaya University', progress: '40 of 64 Lessons', rating: 4.8, status: 'enrolled' as const },
     { id: 3, name: 'Graphic design', school: 'Haromaya University', progress: '40 of 64 Lessons', rating: 4.8, status: 'Unroll' as const },
     { id: 4, name: 'Graphic design', school: 'Haromaya University', progress: '40 of 64 Lessons', rating: 4.8, status: 'enrolled' as const },
@@ -26,9 +27,10 @@ const EnrolledCoursesListView: React.FC<EnrolledCoursesListViewProps> = ({ cours
     { id: 9, name: 'Algorithm Design', school: 'Haromaya University', progress: '40 of 64 Lessons', rating: 4.8, status: 'enrolled' as const },
   ];
 
-  const handleGoToCourse = (courseId: number) => {
-    // TODO: Navigate to course detail page
-    console.log('Navigate to course:', courseId);
+  const handleGoToCourse = (courseId: number, courseName: string) => {
+    if (onGoToCourse) {
+      onGoToCourse(`course-${courseId}`, courseName);
+    }
   };
 
   const handleMoreOptions = (courseId: number) => {

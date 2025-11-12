@@ -57,15 +57,25 @@ export const NavigationTabBar: React.FC<NavigationTabBarProps> = ({
     onTabClose(tabId);
   };
 
+  // Determine if tab is a course detail tab (smaller) or main module tab (normal size)
+  const isCourseDetailTab = (tab: Tab) => {
+    // Course detail tabs have IDs like 'course-{courseId}' (but not just 'course')
+    return tab.id.startsWith('course-') && tab.id !== 'course';
+  };
+
   return (
     <div className="flex-1 flex items-end gap-1 sm:gap-2 overflow-x-auto scrollbar-hide h-full">
-      {tabs.map((tab) => (
+      {tabs.map((tab) => {
+        const isDetailTab = isCourseDetailTab(tab);
+        return (
         <div
           key={tab.id}
           onClick={(e) => handleTabClick(tab.id, e)}
           onMouseEnter={() => setHoveredTab(tab.id)}
           onMouseLeave={() => setHoveredTab(null)}
-          className={`flex items-center gap-2 pl-4 pr-3 sm:pl-6 sm:pr-4 py-2 rounded-t-lg cursor-pointer transition-all duration-200 flex-shrink-0 group ${
+          className={`flex items-center gap-2 pl-4 pr-3 sm:pl-6 sm:pr-4 rounded-t-lg cursor-pointer transition-all duration-200 flex-shrink-0 group ${
+            isDetailTab ? 'py-1.5' : 'py-2'
+          } ${
             tab.isActive 
               ? "bg-white text-[#174A5F] shadow-md" 
               : "bg-white/10 text-white hover:bg-white/20"
@@ -75,7 +85,9 @@ export const NavigationTabBar: React.FC<NavigationTabBarProps> = ({
           {getTabIcon(tab.module)}
           
           {/* Tab Label */}
-          <span className="text-sm sm:text-base font-medium truncate min-w-[80px]">
+          <span className={`font-medium truncate min-w-[80px] ${
+            isDetailTab ? 'text-xs sm:text-sm' : 'text-sm sm:text-base'
+          }`}>
             {tab.label}
           </span>
           
@@ -97,7 +109,8 @@ export const NavigationTabBar: React.FC<NavigationTabBarProps> = ({
             </svg>
           </button>
         </div>
-      ))}
+        );
+      })}
 
       {/* Add Tab Button */}
       {onTabAdd && tabs.length < maxTabs && (

@@ -16,7 +16,7 @@ function App() {
         {currentView === 'demo' && (
           <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="text-center space-y-6">
-              <h1 className="text-3xl font-bold text-primary-600">Delta Labs Auth Demo</h1>
+              <h1 className="text-3xl font-bold text-primary-600">Delta Labs</h1>
               <div className="flex items-center justify-center space-x-4">
                 <button
                   onClick={() => setShowAuthModal(true)}

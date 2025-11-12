@@ -14,6 +14,16 @@ interface NavigationLayoutProps {
 export function NavigationLayout({ children }: NavigationLayoutProps) {
   const { tabs, switchTab, closeTab } = useTab();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  // Tab click and close handlers - navigation will be handled by CoursePage
+  // which is inside the CourseNavigationProvider
+  const handleTabClick = (tabId: string) => {
+    switchTab(tabId);
+  };
+
+  const handleTabClose = (tabId: string) => {
+    closeTab(tabId);
+  };
 
   return (
     <div className="min-h-screen">
@@ -43,8 +53,8 @@ export function NavigationLayout({ children }: NavigationLayoutProps) {
           {/* Center Section: Tabs */}
           <NavigationTabBar
             tabs={tabs}
-            onTabClick={switchTab}
-            onTabClose={closeTab}
+            onTabClick={handleTabClick}
+            onTabClose={handleTabClose}
           />
 
           {/* Right Section: Language, AI Bot, User Profile */}

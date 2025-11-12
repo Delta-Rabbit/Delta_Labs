@@ -17,7 +17,7 @@ interface Course {
 
 interface EnrolledCoursesTableProps {
   courses: Course[];
-  onGoToCourse?: (courseId: number) => void;
+  onGoToCourse?: (courseId: string, courseTitle?: string) => void;
   onMoreOptions?: (courseId: number) => void;
   onSelectAll?: (selected: boolean) => void;
   onSelectCourse?: (courseId: number, selected: boolean) => void;
@@ -161,7 +161,7 @@ const EnrolledCoursesTable: React.FC<EnrolledCoursesTableProps> = ({
                     <DeltaButton
                       variant="primary"
                       size="sm"
-                      onClick={() => onGoToCourse?.(course.id)}
+                      onClick={() => onGoToCourse?.(`course-${course.id}`, course.name)}
                       className="font-primary"
                     >
                       Go to course
