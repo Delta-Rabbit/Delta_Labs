@@ -33,7 +33,7 @@ export default function VideoActions({
   const handleCommentClick = () => {
     onComment && onComment()
     onCommentClick && onCommentClick()
-
+  }
   const handleShareClick = () => {
     setShowShareModal(true) // Open the share modal
     onShare && onShare()
