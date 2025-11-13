@@ -2,6 +2,7 @@
 
 const features = [
   "Course",
+  "School",
   "Planner",
   "Certification",
   "Chatroom",
@@ -33,7 +34,7 @@ export default function LeftSidebar() {
   return (
     <aside
       className="
-        w-80
+        w-[28rem]
         bg-[#F9F9F9] 
         h-screen 
         flex 
@@ -65,7 +66,7 @@ export default function LeftSidebar() {
           px-4
         "
       >
-        <div className="flex flex-wrap gap-2 pb-4">
+        <div className="flex flex-wrap gap-4 pb-4">
           {features.map((feature, index) => (
             <button
               key={`${feature}-${index}`}
@@ -75,9 +76,9 @@ export default function LeftSidebar() {
                 text-[#174A5F] 
                 bg-white 
                 rounded-[30px] 
-                px-5 
-                py-2 
-                text-sm
+                px-6 
+                py-3 
+                text-base
                 transition 
                 hover:bg-[#174A5F] 
                 hover:text-white

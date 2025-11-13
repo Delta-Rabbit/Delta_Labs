@@ -12,7 +12,12 @@ interface AudioItem {
   hashtags: string[]
 }
 
-export default function AudioFeed() {
+interface AudioFeedProps {
+  onCommentClick?: () => void
+  hideReactionButtons?: boolean
+}
+
+export default function AudioFeed({ onCommentClick, hideReactionButtons = false }: AudioFeedProps) { // Accept the prop
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [activeAudioId, setActiveAudioId] = useState<number | null>(null)
@@ -36,7 +41,7 @@ export default function AudioFeed() {
       hashtags: ['Physics', 'NewtonsFirstLaw'],
     },
     {
-      ssrc: '/assets/audio/audio1.mp3',
+      src: '/assets/audio/audio1.mp3', // Fixed typo: was 'ssrc'
       posterSrc: '/assets/images/AudioPlayerImage.png',
       title: 'Modern Physics',
       author: 'Abebe Kebede',
@@ -47,7 +52,6 @@ export default function AudioFeed() {
 
   const stopAllAudio = () => {
     setActiveAudioId(null)
-    
   }
 
   const handleScroll = (e: WheelEvent) => {
@@ -136,6 +140,8 @@ export default function AudioFeed() {
             onPlay={() => handleAudioPlay(index)}
             onPause={() => handleAudioPause(index)}
             onScrollAway={stopAllAudio}
+            onCommentClick={onCommentClick}
+            hideReactionButtons={hideReactionButtons} // Pass the prop here
           />
         </div>
       ))}

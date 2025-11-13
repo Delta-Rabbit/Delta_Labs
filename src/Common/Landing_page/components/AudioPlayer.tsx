@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 import ButtonRowWithIcon from './ButtonRowWithIcon'
-import VideoInfo from './VideoInfo'
-import VideoActions from './VideoActions'
+import VideoInfo from './ContentOwner'
+import VideoActions from './ReactionButtons'
 
 interface AudioPlayerProps {
   src?: string
@@ -15,10 +15,14 @@ interface AudioPlayerProps {
   buttonsOffsetX?: string
   infoOffsetY?: string
   infoOffsetX?: string
+  actionsOffsetY?: string
+  actionsOffsetX?: string
   isActive?: boolean
   onPlay?: () => void
   onPause?: () => void
   onScrollAway?: () => void
+  onCommentClick?: () => void
+  hideReactionButtons?: boolean
 }
 
 export default function AudioPlayer({
@@ -27,14 +31,18 @@ export default function AudioPlayer({
   className = '',
   audioContainerOffsetY = "85px",
   audioContainerOffsetX = "0px",
-  buttonsOffsetY = "65px",
+  buttonsOffsetY = "5px",
   buttonsOffsetX = "35px",
   infoOffsetY = "40px",
   infoOffsetX = "0px",
+  actionsOffsetY = "2px",
+  actionsOffsetX = "-150px",
   isActive = false,
   onPlay,
   onPause,
   onScrollAway,
+  onCommentClick,
+  hideReactionButtons = false,
 }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const progressRef = useRef<HTMLInputElement | null>(null)
@@ -275,16 +283,25 @@ export default function AudioPlayer({
           </button>
         </div>
 
-        <div className="absolute top-[100px] right-[-200px] h-full flex items-center z-30">
-          <VideoActions
-            likesCount={0}
-            commentsCount={0}
-            sharesCount={0}
-            onLike={() => console.log('Liked!')}
-            onComment={() => console.log('Comment clicked')}
-            onShare={() => console.log('Share clicked')}
-          />
-        </div>
+        {/* Video Actions - Conditionally rendered */}
+        {!hideReactionButtons && (
+          <div 
+            className="absolute h-full flex items-center z-30"
+            style={{
+              top: actionsOffsetY,
+              right: actionsOffsetX,
+            }}
+          >
+            <VideoActions
+              likesCount={0}
+              commentsCount={0}
+              sharesCount={0}
+              onLike={() => console.log('Liked!')}
+              onComment={onCommentClick}
+              onShare={() => console.log('Share clicked')}
+            />
+          </div>
+        )}
       </div>
 
       <div
@@ -297,20 +314,23 @@ export default function AudioPlayer({
         <ButtonRowWithIcon />
       </div>
 
-      <div
-        className="relative"
-        style={{
-          top: infoOffsetY,
-          left: infoOffsetX,
-        }}
-      >
-        <VideoInfo
-          profilePic="/assets/images/profile.jpg"
-          name="Abebe Kebede"
-          description="Explore Newton's First Law: Objects stay still or move at constant speed unless a force acts on them."
-          hashtags={['Physics', 'NewtonsFirstLaw']}
-        />
-      </div>
+      {/* VideoInfo - Conditionally rendered */}
+      {!hideReactionButtons && (
+        <div
+          className="relative"
+          style={{
+            top: infoOffsetY,
+            left: infoOffsetX,
+          }}
+        >
+          <VideoInfo
+            profilePic="/assets/images/profile.jpg"
+            name="Abebe Kebede"
+            description="Explore Newton's First Law: Objects stay still or move at constant speed unless a force acts on them."
+            hashtags={['Physics', 'NewtonsFirstLaw']}
+          />
+        </div>
+      )}
 
       <style>
         {`

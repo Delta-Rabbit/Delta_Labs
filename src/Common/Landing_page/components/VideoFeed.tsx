@@ -3,7 +3,12 @@
 import { useState, useEffect, useRef } from 'react'
 import VideoCard from './VideoCard'
 
-export default function VideoFeed() {
+interface VideoFeedProps {
+  onCommentClick?: () => void
+  hideReactionButtons?: boolean
+}
+
+export default function VideoFeed({ onCommentClick, hideReactionButtons = false }: VideoFeedProps) { // Accept the prop
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [activeVideoId, setActiveVideoId] = useState<number | null>(0)
@@ -124,6 +129,8 @@ export default function VideoFeed() {
             onPlay={() => handleVideoPlay(index)}
             onPause={() => handleVideoPause(index)}
             onScrollAway={stopAllVideos}
+            onCommentClick={onCommentClick}
+            hideReactionButtons={hideReactionButtons} // Pass the prop here
           />
         </div>
       ))}

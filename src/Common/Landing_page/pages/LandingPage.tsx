@@ -12,45 +12,97 @@ import SimulationCalculator from '../components/SimulationCalculator';
 import AIBotModal from '../components/AIBotModal';
 import LoginModal from '../components/LoginModal';
 import SignUpModal from '../components/SignUpModal';
+import CommentsView from '../components/CommentsView';
 
 export default function LandingPage() {
-  const [currentFeed, setCurrentFeed] = useState<'video' | 'audio' | 'bot' | 'simulation'>('video'); // ← Changed to 'simulation'
+  const [currentFeed, setCurrentFeed] = useState<'video' | 'audio' | 'bot' | 'simulation'>('video');
+  const [showComments, setShowComments] = useState(false);
+
+  const handleCommentClick = () => {
+    setShowComments(!showComments);
+  };
+
+  const handleCloseComments = () => {
+    setShowComments(false);
+  };
 
   return (
     <div className="flex flex-col h-screen bg-D9D9D9 text-white">
       <TopBar />
 
       <div className="flex flex-1 overflow-hidden">
-        <LeftSidebar />
 
+        <div className="flex">
+          {showComments ? (
+            <div className="h-full bg-[#A5A5A5]">
+              <RightSidebar 
+                onSelectFeed={(feed) => setCurrentFeed(feed)}
+                currentFeed={currentFeed}
+              />
+            </div>
+          ) : (
+            
+            <LeftSidebar />
+          )}
+        </div>
+
+       
         <main className="flex-1 flex items-center justify-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-black/35 via-black/18 to-black/0 z-0"></div>
+          
+          <div className="absolute inset-0 bg-gradient-to-r from-[#A5A5A5]/100 via-[#A5A5A5]/60 to-[#A5A5A5]/0 z-0 pointer-events-none"></div>
 
           <div
-            className="absolute z-20"
+            className="absolute z-40"
             style={{
-              top: 8,
-              left: '50%',
+              top: 6,
+              left: '58%',
               transform: 'translateX(-50%)',
               width: '400px',
               maxWidth: '100%',
             }}
           >
-            <SearchBar
-              leftIconSrc="/assets/icons/menu.svg"
-              rightIconSrc="/assets/icons/search.svg"
-            />
+            <SearchBar />
           </div>
 
           <div className="relative z-10 flex justify-center items-center h-full w-full">
-            {currentFeed === 'video' && <VideoFeed />}
-            {currentFeed === 'audio' && <AudioFeed />}
-            {currentFeed === 'bot' && <BotChat />}
-            {currentFeed === 'simulation' && <SimulationCalculator />} {/* ← Changed to 'simulation' */}
+            {currentFeed === 'video' && (
+              <VideoFeed 
+                onCommentClick={handleCommentClick}
+                hideReactionButtons={showComments}
+              />
+            )}
+            {currentFeed === 'audio' && (
+              <AudioFeed 
+                onCommentClick={handleCommentClick}
+                hideReactionButtons={showComments}
+              />
+            )}
+            {currentFeed === 'bot' && (
+              <BotChat 
+                hideReactionButtons={showComments}
+              />
+            )}
+            {currentFeed === 'simulation' && (
+              <SimulationCalculator 
+                onCommentClick={handleCommentClick}
+                hideReactionButtons={showComments}
+              />
+            )}
           </div>
         </main>
 
-        <RightSidebar onSelectFeed={(feed) => setCurrentFeed(feed)} />
+        <div className="flex">
+          {showComments ? (
+            
+            <CommentsView onClose={handleCloseComments} />
+          ) : (
+        
+            <RightSidebar 
+              onSelectFeed={(feed) => setCurrentFeed(feed)}
+              currentFeed={currentFeed}
+            />
+          )}
+        </div>
       </div>
 
       <AIBotModal />
