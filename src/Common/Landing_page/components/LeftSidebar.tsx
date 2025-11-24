@@ -31,6 +31,11 @@ const features = [
 ]
 
 export default function LeftSidebar() {
+  const handleSchoolClick = () => {
+    console.log("Navigate to School page")
+    window.dispatchEvent(new CustomEvent('navigateToSchool'))
+  }
+
   return (
     <aside
       className="
@@ -84,6 +89,7 @@ export default function LeftSidebar() {
                 hover:text-white
               "
               style={{ fontFamily: "Poppins", fontWeight: 500 }}
+              onClick={feature === "School" ? handleSchoolClick : undefined}
             >
               {feature}
             </button>
