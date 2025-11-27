@@ -1,78 +1,149 @@
 /**
- * Delta Labs Q&A Page
- * Questions and Answers page for course discussions
- * Features: My Questions, My Answers, FAQs Questions tabs with search, filtering, and pagination
+ * Delta Labs Q&A Page - Refactored with Atomic Design
+ * Main orchestrator component using atomic design principles
  */
 
 import React, { useState } from 'react';
-import SearchBar from '../../../../../../components/SearchBar';
-import { DeltaButton } from '../../../../../../components/theme';
+import { SidebarNavigation } from './components';
+import { 
+  QAView, 
+  BookmarksView, 
+  NotificationsView, 
+  CommunityWikiView, 
+  LiveQAView,
+  NetworkView,
+  PaymentView 
+} from './pages';
+import { AskQuestionForm } from './forms';
+import type { 
+  QATab, 
+  NetworkTab, 
+  QAView as QAViewType,
+  AskQuestionStep,
+  Audience,
+  QuestionPayment,
+  Question,
+  BookmarkedQuestion,
+  Notification,
+  WikiTopic,
+  LiveSession,
+  ChatMessage,
+} from './types';
 
-type QATab = 'my-questions' | 'my-answers' | 'faqs';
-
-interface Question {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  author: {
-    name: string;
-    avatar: string;
-  };
-  askedDate: string;
-  answerCount: number;
-  views: number;
-  isClosed: boolean;
-  isBookmarked: boolean;
-}
-
-const QAPage: React.FC = () => {
+const QAPage = () => {
+  // Main view state
+  const [activeSidebarItem, setActiveSidebarItem] = useState<string>('profile');
+  const [activeView, setActiveView] = useState<QAViewType>('qa');
+  
+  // Q&A view state
   const [activeTab, setActiveTab] = useState<QATab>('my-questions');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
+  
+  // Ask Question form state
+  const [showAskQuestion, setShowAskQuestion] = useState(false);
+  const [askQuestionStep, setAskQuestionStep] = useState<AskQuestionStep>(1);
+  const [askQuestionData, setAskQuestionData] = useState({
+    title: '',
+    details: '',
+    tags: [] as string[],
+    roadmap: '',
+    duplicateSearch: '',
+    confirmNoDuplicate: false,
+    postAnonymously: true,
+    audience: 'school' as Audience,
+    payment: 'free' as QuestionPayment,
+    questionType: 'Selected Option',
+  });
+  
+  // Answer form state
+  const [answerContent, setAnswerContent] = useState('');
+  const [anonymousAnswer, setAnonymousAnswer] = useState(false);
+  
+  // Pagination state
   const [currentPage, setCurrentPage] = useState(2);
   const totalPages = 25;
-
-  // Sample questions data
-  const questions: Question[] = [
+  
+  // Live session state
+  const [liveTab, setLiveTab] = useState<'my-live' | 'community-live'>('my-live');
+  const [joinedLiveSessionId, setJoinedLiveSessionId] = useState<string | null>(null);
+  const [isMicMuted, setIsMicMuted] = useState(false);
+  const [isCameraOn, setIsCameraOn] = useState(true);
+  const [isAvailableOnline, setIsAvailableOnline] = useState(true);
+  
+  // Network session state
+  const [networkTab, setNetworkTab] = useState<NetworkTab>('my-questions');
+  const [joinedNetworkSessionId, setJoinedNetworkSessionId] = useState<string | null>(null);
+  const [networkMicMuted, setNetworkMicMuted] = useState(false);
+  const [networkCameraOn, setNetworkCameraOn] = useState(true);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [chatInput, setChatInput] = useState('');
+  
+  // Sample data - In production, this would come from API/context
+  const allQuestions: Question[] = [
     {
       id: '1',
       title: 'Principles of Projectile Motion on an Inclined Plane',
       description: 'Explain how the angle of projection, the incline angle, and the initial velocity affect the trajectory, time of flight, maximum height, and range of a projectile launched from an inclined plane. Discuss how ...',
       tags: ['Open-ended', 'Projectile Motion', 'Kinematics', 'Physics Theory'],
-      author: {
-        name: 'Leul Solomon',
-        avatar: '',
-      },
+      author: { name: 'Leul Solomon', avatar: '' },
       askedDate: '2 days ago',
-      answerCount: 1,
+      answerCount: 2,
       views: 300,
       isClosed: false,
       isBookmarked: false,
+      userAnswer: {
+        id: 'a1',
+        content: 'When a projectile is launched on an inclined plane, the motion becomes more complex than standard projectile motion. The key factors affecting the trajectory are: 1) The angle of projection relative to the horizontal, 2) The incline angle of the plane, and 3) The initial velocity magnitude. The trajectory will be parabolic but modified by the incline. The time of flight increases with steeper incline angles, while the range depends on both the projection angle and incline angle. The maximum height is achieved when the vertical component of velocity becomes zero.',
+        votes: 1,
+        author: { name: 'You', avatar: '' },
+        editedAt: 'just now',
+        commentCount: 0,
+      },
+      answers: [
+        {
+          id: 'a1',
+          content: 'You are the operator of a junction and you hear a Git branch coming. You have no idea which way it is supposed to go. You stop the train to ask the driver which direction they want. And then you set the switch appropriately to open them.',
+          votes: 1,
+          author: { name: 'Leul Solomon', avatar: '' },
+          answeredAt: '4 mins ago',
+          commentCount: 0,
+        },
+        {
+          id: 'a2',
+          content: 'When a projectile is launched on an inclined plane, the motion becomes more complex than standard projectile motion. The key factors affecting the trajectory are: 1) The angle of projection relative to the horizontal, 2) The incline angle of the plane, and 3) The initial velocity magnitude. The trajectory will be parabolic but modified by the incline. The time of flight increases with steeper incline angles, while the range depends on both the projection angle and incline angle. The maximum height is achieved when the vertical component of velocity becomes zero.',
+          votes: 0,
+          author: { name: 'John Doe', avatar: '' },
+          answeredAt: '1 hour ago',
+          commentCount: 2,
+        },
+      ],
     },
     {
       id: '2',
       title: 'Principles of Projectile Motion on an Inclined Plane',
       description: 'Explain how the angle of projection, the incline angle, and the initial velocity affect the trajectory, time of flight, maximum height, and range of a projectile launched from an inclined plane. Discuss how ...',
       tags: ['Open-ended', 'Projectile Motion', 'Kinematics', 'Physics Theory'],
-      author: {
-        name: 'Leul Solomon',
-        avatar: '',
-      },
+      author: { name: 'Leul Solomon', avatar: '' },
       askedDate: '2 days ago',
       answerCount: 1,
       views: 300,
       isClosed: false,
       isBookmarked: false,
+      userAnswer: {
+        id: 'a2',
+        content: 'The motion of a projectile on an inclined plane requires analyzing both the component parallel to the incline and perpendicular to it. The acceleration due to gravity must be resolved into these components, which changes the standard equations of motion.',
+        votes: 0,
+        author: { name: 'You', avatar: '' },
+        commentCount: 2,
+      },
     },
     {
       id: '3',
       title: 'Principles of Projectile Motion on an Inclined Plane',
       description: 'Explain how the angle of projection, the incline angle, and the initial velocity affect the trajectory, time of flight, maximum height, and range of a projectile launched from an inclined plane. Discuss how ...',
       tags: ['Open-ended', 'Projectile Motion', 'Kinematics', 'Physics Theory'],
-      author: {
-        name: 'Leul Solomon',
-        avatar: '',
-      },
+      author: { name: 'Leul Solomon', avatar: '' },
       askedDate: '2 days ago',
       answerCount: 1,
       views: 300,
@@ -80,341 +151,399 @@ const QAPage: React.FC = () => {
       isBookmarked: false,
     },
   ];
-
-  const tabs: { id: QATab; label: string }[] = [
-    { id: 'my-questions', label: 'My Questions' },
-    { id: 'my-answers', label: 'My Answers' },
-    { id: 'faqs', label: 'FAQs Questions' },
+  
+  const bookmarkedQuestions: BookmarkedQuestion[] = [
+    {
+      id: '1',
+      title: 'Principles of Projectile Motion on an Inclined Plane',
+      description: 'Explain how the angle of projection, the incline angle, and the initial velocity affect the trajectory, time of flight, maximum height, and range of a projectile launched from an inclined plane. Discuss how ...',
+      tags: ['Open-ended', 'Projectile Motion', 'Kinematics', 'Physics Theory'],
+      author: { name: 'Leul Solomon', avatar: '' },
+      askedDate: '2 days ago',
+      answerCount: 1,
+      views: 300,
+      isClosed: false,
+      isPaid: true,
+    },
+    {
+      id: '2',
+      title: 'Principles of Projectile Motion on an Inclined Plane',
+      description: 'Explain how the angle of projection, the incline angle, and the initial velocity affect the trajectory, time of flight, maximum height, and range of a projectile launched from an inclined plane. Discuss how ...',
+      tags: ['Open-ended', 'Projectile Motion', 'Kinematics', 'Physics Theory'],
+      author: { name: 'Leul Solomon', avatar: '' },
+      askedDate: '2 days ago',
+      answerCount: 1,
+      views: 300,
+      isClosed: false,
+      isPaid: true,
+    },
+    {
+      id: '3',
+      title: 'Principles of Projectile Motion on an Inclined Plane',
+      description: 'Explain how the angle of projection, the incline angle, and the initial velocity affect the trajectory, time of flight, maximum height, and range of a projectile launched from an inclined plane. Discuss how ...',
+      tags: ['Open-ended', 'Projectile Motion', 'Kinematics', 'Physics Theory'],
+      author: { name: 'Leul Solomon', avatar: '' },
+      askedDate: '2 days ago',
+      answerCount: 1,
+      views: 300,
+      isClosed: true,
+      isPaid: true,
+    },
   ];
-
+  
+  const notifications: Notification[] = [
+    {
+      id: '1',
+      type: 'answer',
+      title: 'New answer to your question',
+      message: 'John Doe answered your question "Principles of Projectile Motion on an Inclined Plane"',
+      timestamp: '5 minutes ago',
+      isRead: false,
+      relatedItem: {
+        id: 'q1',
+        title: 'Principles of Projectile Motion on an Inclined Plane',
+      },
+      author: { name: 'John Doe', avatar: '' },
+    },
+    {
+      id: '2',
+      type: 'mention',
+      title: 'You were mentioned',
+      message: 'Sarah Smith mentioned you in a comment on "Kinematics and Dynamics"',
+      timestamp: '1 hour ago',
+      isRead: false,
+      relatedItem: {
+        id: 'q2',
+        title: 'Kinematics and Dynamics',
+      },
+      author: { name: 'Sarah Smith', avatar: '' },
+    },
+    {
+      id: '3',
+      type: 'course-update',
+      title: 'Course update available',
+      message: 'New content added to "Advanced Physics" course',
+      timestamp: '2 hours ago',
+      isRead: true,
+      relatedItem: {
+        id: 'c1',
+        courseName: 'Advanced Physics',
+      },
+    },
+    {
+      id: '4',
+      type: 'reply',
+      title: 'Reply to your comment',
+      message: 'Michael Brown replied to your comment on "Quantum Mechanics Basics"',
+      timestamp: '3 hours ago',
+      isRead: true,
+      relatedItem: {
+        id: 'q3',
+        title: 'Quantum Mechanics Basics',
+      },
+      author: { name: 'Michael Brown', avatar: '' },
+    },
+    {
+      id: '5',
+      type: 'like',
+      title: 'Your answer was liked',
+      message: 'Emma Wilson and 5 others liked your answer',
+      timestamp: '1 day ago',
+      isRead: true,
+      author: { name: 'Emma Wilson', avatar: '' },
+    },
+    {
+      id: '6',
+      type: 'follow',
+      title: 'New follower',
+      message: 'David Lee started following you',
+      timestamp: '2 days ago',
+      isRead: true,
+      author: { name: 'David Lee', avatar: '' },
+    },
+  ];
+  
+  const wikiTopics: WikiTopic[] = [
+    {
+      id: '1',
+      title: 'Principles of Projectile Motion on an Inclined Plane',
+      description: 'Explain how the angle of projection, the incline angle, and the initial velocity affect the trajectory, time of flight, maximum height, and range of a projectile launched from an inclined plane. Discuss how ...',
+      tags: ['Open-ended', 'Projectile Motion', 'Kinematics', 'Physics Theory'],
+      author: { name: 'Leul Solomon', avatar: '' },
+      askedDate: '2 days ago',
+      answerCount: 1,
+      views: 300,
+      isPaid: true,
+      isBookmarked: false,
+    },
+    {
+      id: '2',
+      title: 'Principles of Projectile Motion on an Inclined Plane',
+      description: 'Explain how the angle of projection, the incline angle, and the initial velocity affect the trajectory, time of flight, maximum height, and range of a projectile launched from an inclined plane. Discuss how ...',
+      tags: ['Open-ended', 'Projectile Motion', 'Kinematics', 'Physics Theory'],
+      author: { name: 'Leul Solomon', avatar: '' },
+      askedDate: '2 days ago',
+      answerCount: 1,
+      views: 300,
+      isPaid: true,
+      isBookmarked: false,
+    },
+    {
+      id: '3',
+      title: 'Principles of Projectile Motion on an Inclined Plane',
+      description: 'Explain how the angle of projection, the incline angle, and the initial velocity affect the trajectory, time of flight, maximum height, and range of a projectile launched from an inclined plane. Discuss how ...',
+      tags: ['Open-ended', 'Projectile Motion', 'Kinematics', 'Physics Theory'],
+      author: { name: 'Leul Solomon', avatar: '' },
+      askedDate: '2 days ago',
+      answerCount: 1,
+      views: 300,
+      isPaid: true,
+      isBookmarked: false,
+    },
+  ];
+  
+  const liveSessions: LiveSession[] = [
+    {
+      id: '1',
+      title: 'What is Quantum',
+      host: { name: 'Leul Mekonnen', avatar: '' },
+      invitationType: 'invited',
+      status: 'roadmap',
+      action: 'live',
+      viewers: 4,
+      isOnline: true,
+    },
+    {
+      id: '2',
+      title: 'What is Mechanics',
+      host: { name: 'Leul Mekonnen', avatar: '' },
+      invitationType: 'invited-by',
+      status: 'roadmap',
+      action: 'join',
+      viewers: 0,
+      isOnline: true,
+    },
+  ];
+  
+  // Handlers
+  const handleSidebarItemChange = (item: string) => {
+    setActiveSidebarItem(item);
+    const viewMap: Record<string, QAViewType> = {
+      'profile': 'qa',
+      'bookmark': 'bookmarks',
+      'notification': 'notifications',
+      'mindmap': 'community-wiki',
+      'connection': 'live',
+      'links': 'network',
+      'financial': 'payment',
+    };
+    setActiveView(viewMap[item] || 'qa');
+    setSelectedQuestionId(null);
+    setShowAskQuestion(false);
+    setJoinedLiveSessionId(null);
+    setJoinedNetworkSessionId(null);
+  };
+  
+  const handleAskQuestionSubmit = () => {
+    // Handle form submission
+    console.log('Question submitted:', askQuestionData);
+    setShowAskQuestion(false);
+    setAskQuestionStep(1);
+    setAskQuestionData({
+      title: '',
+      details: '',
+      tags: [],
+      roadmap: '',
+      duplicateSearch: '',
+      confirmNoDuplicate: false,
+      postAnonymously: true,
+      audience: 'school',
+      payment: 'free',
+      questionType: 'Selected Option',
+    });
+  };
+  
+  const handleAnswerSubmit = () => {
+    if (answerContent.trim()) {
+      console.log('Answer submitted:', { answerContent, anonymousAnswer });
+      setAnswerContent('');
+      setAnonymousAnswer(false);
+    }
+  };
+  
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
 
-  const renderPagination = () => {
-    const pages: (number | string)[] = [];
-    
-    // Always show first page
-    pages.push(1);
-    
-    // Show ellipsis if current page is far from start
-    if (currentPage > 4) {
-      pages.push('...');
+  const handleSendChatMessage = () => {
+    if (chatInput.trim()) {
+      const newMessage: ChatMessage = {
+        id: Date.now().toString(),
+        author: 'You',
+        message: chatInput,
+        timestamp: 'just now',
+      };
+      setChatMessages([...chatMessages, newMessage]);
+      setChatInput('');
     }
-    
-    // Show pages around current page
-    const start = Math.max(2, currentPage - 1);
-    const end = Math.min(totalPages - 1, currentPage + 1);
-    
-    for (let i = start; i <= end; i++) {
-      if (i !== 1 && i !== totalPages) {
-        pages.push(i);
-      }
-    }
-    
-    // Show ellipsis if current page is far from end
-    if (currentPage < totalPages - 3) {
-      pages.push('...');
-    }
-    
-    // Always show last page
-    if (totalPages > 1) {
-      pages.push(totalPages);
-    }
-
-    return (
-      <div className="flex items-center justify-center gap-2 mt-8">
-        <button
-          onClick={() => handlePageChange(1)}
-          className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-surface-secondary rounded-lg transition-colors"
-          aria-label="First page"
-        >
-          « First
-        </button>
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-surface-secondary rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Previous page"
-        >
-          &lt; Back
-        </button>
-        
-        {pages.map((page, index) => {
-          if (page === '...') {
-            return (
-              <span key={`ellipsis-${index}`} className="px-2 text-text-secondary">
-                ...
-              </span>
-            );
-          }
-          
-          const isActive = page === currentPage;
-          return (
-            <button
-              key={page}
-              onClick={() => handlePageChange(page as number)}
-              className={`px-3 py-2 text-sm rounded-lg transition-colors ${
-                isActive
-                  ? 'bg-primary-500 text-white font-semibold'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-secondary'
-              }`}
-              aria-label={`Page ${page}`}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              {page}
-            </button>
-          );
-        })}
-        
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-surface-secondary rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Next page"
-        >
-          Next &gt;
-        </button>
-        <button
-          onClick={() => handlePageChange(totalPages)}
-          className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-surface-secondary rounded-lg transition-colors"
-          aria-label="Last page"
-        >
-          Last »
-        </button>
-      </div>
-    );
   };
-
-  return (
-    <div className="w-full font-primary py-6">
-      {/* Tabs and Ask Question Button */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-6 border-b border-border-primary" role="tablist">
-          {tabs.map((tab) => {
-            const isSelected = activeTab === tab.id;
-            const ariaSelected = isSelected ? 'true' : 'false';
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`pb-3 px-1 font-medium text-sm transition-colors relative ${
-                  isSelected
-                    ? 'text-primary-600 font-semibold'
-                    : 'text-text-secondary hover:text-text-primary'
-                }`}
-                aria-selected={ariaSelected}
-                role="tab"
-              >
-                {tab.label}
-                {isSelected && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-        
-        <DeltaButton
-          variant="primary"
-          size="md"
-          className="bg-primary-500 hover:bg-primary-600"
-        >
-          Ask Question
-        </DeltaButton>
-      </div>
-
-      {/* Search and Filter */}
-      <div className="flex items-center gap-4 mb-6">
-        <div className="flex-1 max-w-2xl">
-          <SearchBar
-            placeholder="Search"
-            value={searchQuery}
-            onChange={setSearchQuery}
-            maxWidth="full"
-            showFilterIcon={true}
+  
+  // Render based on active view
+  const renderView = () => {
+    if (showAskQuestion) {
+      return (
+        <AskQuestionForm
+          step={askQuestionStep}
+          data={askQuestionData}
+          onDataChange={(data: Partial<typeof askQuestionData>) => setAskQuestionData((prev: typeof askQuestionData) => ({ ...prev, ...data }))}
+          onStepChange={setAskQuestionStep}
+          onCancel={() => {
+            setShowAskQuestion(false);
+            setAskQuestionStep(1);
+            setAskQuestionData({
+              title: '',
+              details: '',
+              tags: [],
+              roadmap: '',
+              duplicateSearch: '',
+              confirmNoDuplicate: false,
+              postAnonymously: true,
+              audience: 'school',
+              payment: 'free',
+              questionType: 'Selected Option',
+            });
+          }}
+          onSubmit={handleAskQuestionSubmit}
+        />
+      );
+    }
+    
+    switch (activeView) {
+      case 'qa':
+        return (
+          <QAView
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            questions={allQuestions}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            selectedQuestionId={selectedQuestionId}
+            onQuestionClick={setSelectedQuestionId}
+            onBackToQuestions={() => setSelectedQuestionId(null)}
+            onAskQuestion={() => setShowAskQuestion(true)}
+            answerContent={answerContent}
+            onAnswerContentChange={setAnswerContent}
+            anonymousAnswer={anonymousAnswer}
+            onAnonymousAnswerChange={setAnonymousAnswer}
+            onAnswerSubmit={handleAnswerSubmit}
           />
-        </div>
-        <button
-          className="p-3 border border-border-primary rounded-lg hover:bg-surface-secondary transition-colors"
-          aria-label="Filter questions"
-        >
-          <svg className="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-          </svg>
-        </button>
-      </div>
-
-      {/* Questions List */}
-      <div className="space-y-2">
-        {questions.map((question) => (
-          <div
-            key={question.id}
-            className="bg-white border border-border-primary rounded-lg p-3 hover:shadow-md transition-shadow"
-          >
-            <div className="flex gap-3">
-              {/* Left Side - Bookmark and Share Icons */}
-              <div className="flex flex-col gap-2 pt-0.5">
-                <button
-                  className="p-1 hover:bg-surface-secondary rounded transition-colors"
-                  aria-label={question.isBookmarked ? 'Remove bookmark' : 'Bookmark question'}
-                >
-                  <svg
-                    className={`w-4 h-4 ${question.isBookmarked ? 'text-primary-600 fill-primary-600' : 'text-text-secondary'}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                  </svg>
-                </button>
-                <button
-                  className="p-1 hover:bg-surface-secondary rounded transition-colors"
-                  aria-label="Share question"
-                >
-                  <svg
-                    className="w-4 h-4 text-text-secondary"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.885 12.938 9 12.482 9 12c0-.482-.115-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Main Content */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-4 mb-1">
-                  <h3 className="text-base font-semibold text-text-primary flex-1">
-                    {question.title}
-                  </h3>
-                  {/* Answer Status and Views - Top Right */}
-                  <div className="flex items-center gap-3 flex-shrink-0">
-                    <div className="flex items-center gap-1.5 px-2 py-1 bg-green-50 border border-green-200 rounded-lg">
-                      <svg className="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-xs font-medium text-green-700">
-                        {question.answerCount} answer{question.answerCount !== 1 ? 's' : ''}
-                      </span>
-                    </div>
-                    <span className="text-xs text-text-secondary whitespace-nowrap">
-                      {question.views} views
-                    </span>
-                  </div>
-                </div>
-                
-                <p className="text-sm text-text-secondary mb-2 line-clamp-2">
-                  {question.description}
-                </p>
-
-                {/* Tags and Author */}
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <div className="flex flex-wrap gap-1.5">
-                    {question.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2 py-0.5 text-xs font-medium bg-surface-secondary text-text-secondary rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  
-                  {/* Author and Date */}
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <div className="w-6 h-6 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
-                      <span className="text-[10px] font-semibold text-primary-600">
-                        {question.author.name.charAt(0)}
-                      </span>
-                    </div>
-                    <span className="text-sm text-text-secondary">
-                      {question.author.name}
-                    </span>
-                    <span className="text-sm text-text-secondary">•</span>
-                    <span className="text-sm text-text-secondary">
-                      Asked {question.askedDate}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Side - Actions */}
-              <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                <div className="flex items-center gap-2">
-                  <button
-                    className="text-xs text-primary-600 hover:text-primary-700 font-medium"
-                    aria-label="Follow topic"
-                  >
-                    Follow Topic
-                  </button>
-                  <button
-                    className="p-1 hover:bg-surface-secondary rounded transition-colors"
-                    aria-label="Edit question"
-                  >
-                    <svg
-                      className="w-4 h-4 text-text-secondary"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  </button>
-                  <button
-                    className="p-1 hover:bg-surface-secondary rounded transition-colors"
-                    aria-label="Delete question"
-                  >
-                    <svg
-                      className="w-4 h-4 text-text-secondary"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                </div>
-                
-                <button
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                    question.isClosed
-                      ? 'bg-surface-secondary text-text-primary hover:bg-surface-tertiary'
-                      : 'bg-error-50 text-error-600 hover:bg-error-100 border border-error-200'
-                  }`}
-                  aria-label={question.isClosed ? 'Reopen question' : 'Close question'}
-                >
-                  {question.isClosed ? (
-                    <>
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                      Reopen question
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                      Close Question
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Pagination */}
-      {renderPagination()}
+        );
+      
+      case 'bookmarks':
+        return (
+          <BookmarksView
+            questions={bookmarkedQuestions}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            onQuestionClick={setSelectedQuestionId}
+          />
+        );
+      
+      case 'notifications':
+        return (
+          <NotificationsView
+            notifications={notifications}
+            onNotificationClick={(id: string) => console.log('Notification clicked:', id)}
+            onMarkAsRead={(id: string) => console.log('Mark as read:', id)}
+          />
+        );
+      
+      case 'community-wiki':
+        return (
+          <CommunityWikiView
+            topics={wikiTopics}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            onTopicClick={(id: string) => console.log('Topic clicked:', id)}
+          />
+        );
+      
+      case 'live':
+        return (
+          <LiveQAView
+            sessions={liveSessions}
+            activeTab={liveTab}
+            onTabChange={setLiveTab}
+            isAvailableOnline={isAvailableOnline}
+            onAvailableOnlineChange={setIsAvailableOnline}
+            onJoinSession={setJoinedLiveSessionId}
+            joinedSessionId={joinedLiveSessionId}
+            onLeaveSession={() => setJoinedLiveSessionId(null)}
+            isMicMuted={isMicMuted}
+            onMicToggle={() => setIsMicMuted(!isMicMuted)}
+            isCameraOn={isCameraOn}
+            onCameraToggle={() => setIsCameraOn(!isCameraOn)}
+          />
+        );
+      
+      case 'network':
+        return (
+          <NetworkView
+            questions={allQuestions}
+            activeTab={networkTab}
+            onTabChange={setNetworkTab}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            selectedQuestionId={selectedQuestionId}
+            onQuestionClick={setSelectedQuestionId}
+            onBackToQuestions={() => setSelectedQuestionId(null)}
+            joinedSessionId={joinedNetworkSessionId}
+            onJoinSession={setJoinedNetworkSessionId}
+            onLeaveSession={() => setJoinedNetworkSessionId(null)}
+            isMicMuted={networkMicMuted}
+            onMicToggle={() => setNetworkMicMuted(!networkMicMuted)}
+            isCameraOn={networkCameraOn}
+            onCameraToggle={() => setNetworkCameraOn(!networkCameraOn)}
+            chatMessages={chatMessages}
+            chatInput={chatInput}
+            onChatInputChange={setChatInput}
+            onSendMessage={handleSendChatMessage}
+          />
+        );
+      
+      case 'payment':
+        return <PaymentView />;
+      
+      default:
+        return null;
+    }
+  };
+  
+  return (
+    <div className="w-full font-primary py-6 relative">
+      {/* Left Sidebar Navigation */}
+      <SidebarNavigation 
+        activeItem={activeSidebarItem} 
+        onItemChange={handleSidebarItemChange}
+        currentPage={activeView}
+      />
+      
+      {/* Main Content */}
+      {renderView()}
     </div>
   );
 };
