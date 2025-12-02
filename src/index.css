@@ -3,3 +3,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom Scrollbar for Questions List - Minimal Design */
+.questions-scrollbar {
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  &::-webkit-scrollbar {
+    height: 3px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #D4D4D4;
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #A3A3A3;
+  }
+  
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #D4D4D4 transparent;
+}
+
+/* Style for blank markers in question text */
+.blank-marker {
+  color: #174A5F;
+  background-color: #E6F4F7;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: 500;
+  font-family: monospace;
+}

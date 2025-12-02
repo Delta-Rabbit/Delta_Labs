@@ -3,17 +3,18 @@
  * Main orchestrator for Exercise & Test module
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SidebarNavigation } from './components';
-import { HomePage, SchoolExercisesPage, ExerciseDetailPage } from './pages';
-import type { Exercise } from './types';
+import { HomePage, SchoolExercisesPage, ExerciseDetailPage, CustomizeExercisePage, AddExercisePage } from './pages';
+import type { Exercise, CustomizeExerciseData, ExerciseTab } from './types';
 
-type ExerciseView = 'home' | 'school-exercises' | 'exercise-detail' | 'people' | 'profile' | 'history' | 'education' | 'notifications';
+type ExerciseView = 'home' | 'school-exercises' | 'exercise-detail' | 'customize-exercise' | 'add-exercise' | 'people' | 'profile' | 'history' | 'education' | 'notifications';
 
 const ExerciseTestPage: React.FC = () => {
   const [activeSidebarItem, setActiveSidebarItem] = useState<string>('home');
   const [activeView, setActiveView] = useState<ExerciseView>('home');
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
+  const [shouldShowMyExerciseTab, setShouldShowMyExerciseTab] = useState<boolean>(false);
 
   // Mock exercise data
   const exercises: Exercise[] = [
@@ -98,6 +99,48 @@ const ExerciseTestPage: React.FC = () => {
     console.log('Take with friend:', exerciseId);
   };
 
+  const handleCustomizeExercise = () => {
+    setActiveView('customize-exercise');
+  };
+
+  const handleAddExercise = () => {
+    setActiveView('add-exercise');
+  };
+
+  const handleSaveDraft = () => {
+    // TODO: Save exercise as draft
+    console.log('Save draft clicked');
+  };
+
+  const handleReviewPost = () => {
+    // TODO: Review and post exercise
+    console.log('Review & Post clicked');
+  };
+
+  const handleAddNextQuestion = () => {
+    // TODO: Add next question to the exercise
+    console.log('Add next question clicked');
+  };
+
+  const handleGenerateExercise = (data: CustomizeExerciseData) => {
+    // TODO: Generate exercise based on customization data
+    console.log('Generating exercise with data:', data);
+    // Navigate to school exercises with "my-exercise" tab active
+    setShouldShowMyExerciseTab(true);
+    setActiveView('school-exercises');
+    setActiveSidebarItem('home'); // Ensure we're on the right sidebar item
+  };
+
+  // Reset the flag after navigating to school-exercises
+  useEffect(() => {
+    if (shouldShowMyExerciseTab && activeView === 'school-exercises') {
+      const timer = setTimeout(() => {
+        setShouldShowMyExerciseTab(false);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [shouldShowMyExerciseTab, activeView]);
+
   const renderView = () => {
     switch (activeView) {
       case 'home':
@@ -107,15 +150,23 @@ const ExerciseTestPage: React.FC = () => {
             onTestClick={handleTestClick}
           />
         );
-      case 'school-exercises':
+      case 'school-exercises': {
+        const initialTabValue = shouldShowMyExerciseTab ? 'my-exercise' as ExerciseTab : undefined;
         return (
           <SchoolExercisesPage
             exercises={exercises}
             onStartExercise={handleStartExercise}
             onTakeWithFriend={handleTakeWithFriend}
-            onBack={() => setActiveView('home')}
+            onBack={() => {
+              setActiveView('home');
+              setShouldShowMyExerciseTab(false);
+            }}
+            onCustomizeExercise={handleCustomizeExercise}
+            onAddExercise={handleAddExercise}
+            initialTab={initialTabValue}
           />
         );
+      }
       case 'exercise-detail':
         if (!selectedExercise) return null;
         return (
@@ -129,6 +180,22 @@ const ExerciseTestPage: React.FC = () => {
               setActiveView('school-exercises');
               setSelectedExercise(null);
             }}
+          />
+        );
+      case 'customize-exercise':
+        return (
+          <CustomizeExercisePage
+            onBack={() => setActiveView('school-exercises')}
+            onGenerate={handleGenerateExercise}
+          />
+        );
+      case 'add-exercise':
+        return (
+          <AddExercisePage
+            onBack={() => setActiveView('school-exercises')}
+            onSaveDraft={handleSaveDraft}
+            onReviewPost={handleReviewPost}
+            onAddNextQuestion={handleAddNextQuestion}
           />
         );
       case 'people':
@@ -173,8 +240,8 @@ const ExerciseTestPage: React.FC = () => {
 
   return (
     <div className="w-full font-primary py-6 relative">
-      {/* Left Sidebar Navigation - Hidden on detail page */}
-      {activeView !== 'exercise-detail' && (
+      {/* Left Sidebar Navigation - Hidden on detail, customize, and add-exercise pages */}
+      {activeView !== 'exercise-detail' && activeView !== 'customize-exercise' && activeView !== 'add-exercise' && (
         <SidebarNavigation
           activeItem={activeSidebarItem}
           onItemChange={handleSidebarItemChange}

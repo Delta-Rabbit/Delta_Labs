@@ -2,7 +2,7 @@
  * Exercise Module Type Definitions
  */
 
-export type ExerciseTab = 'school' | 'community' | 'my-exercise' | 'add-question';
+export type ExerciseTab = 'school' | 'community' | 'my-exercise';
 export type ExerciseDifficulty = 'easy' | 'medium' | 'hard';
 export type QuestionType = 'true-false' | 'matching' | 'multiple-choice' | 'blank-space';
 
@@ -16,5 +16,13 @@ export interface Exercise {
   duration: number; // in minutes
   attempts: number;
   thumbnail: string;
+}
+
+export interface CustomizeExerciseData {
+  numberOfQuestions: string;
+  questionTypes: string[];
+  difficulties: string[];
+  timer: string;
+  roadmapSection?: string;
 }
 

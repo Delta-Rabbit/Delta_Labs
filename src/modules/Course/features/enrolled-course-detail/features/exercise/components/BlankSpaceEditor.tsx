@@ -1,77 +1,99 @@
 /**
- * RichTextEditor Component
- * Reusable rich text editor toolbar and textarea
+ * Blank Space Editor Component
+ * Custom editor that highlights blank markers like [blank1], [blank2]
  */
 
-import React from 'react';
-import { DeltaTextarea } from '../../../../../../../components/theme';
+import React, { useRef, useEffect, useState } from 'react';
 
-interface RichTextEditorProps {
+type ReactNode = React.ReactNode;
+
+interface BlankSpaceEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
-  ro number;zzzz
+  rows?: number;
   className?: string;
   onInsertBlank?: () => void;
 }
 
-export const RichTextEditor: React.FC<RichTextEditorProps> = ({
+export const BlankSpaceEditor: React.FC<BlankSpaceEditorProps> = ({
   value,
   onChange,
   placeholder = '',
-  rows = 10,
+  rows = 6,
   className = '',
   onInsertBlank,
 }) => {
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Only handle [blank] as a unit if onInsertBlank is provided (blank-space questions)
-    if (!onInsertBlank) return;
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const highlightRef = useRef<HTMLDivElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
-    const textarea = e.currentTarget;
-    const cursorPos = textarea.selectionStart;
-    const isBackspace = e.key === 'Backspace';
-    const isDelete = e.key === 'Delete';
-
-    if (isBackspace || isDelete) {
-      const text = value;
-      const blankMarker = '[blank]';
+  // Sync scroll and ensure identical styling between textarea and highlight div
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    const highlight = highlightRef.current;
+    if (textarea && highlight) {
+      // Sync scroll
+      const handleScroll = () => {
+        highlight.scrollTop = textarea.scrollTop;
+        highlight.scrollLeft = textarea.scrollLeft;
+      };
+      textarea.addEventListener('scroll', handleScroll);
       
-      // Find all occurrences of [blank]
-      const blankPattern = /\[blank\]/g;
-      let match;
+      // Ensure identical computed styles
+      const syncStyles = () => {
+        const textareaStyle = window.getComputedStyle(textarea);
+        highlight.style.fontFamily = textareaStyle.fontFamily;
+        highlight.style.fontSize = textareaStyle.fontSize;
+        highlight.style.lineHeight = textareaStyle.lineHeight;
+        highlight.style.letterSpacing = textareaStyle.letterSpacing;
+        highlight.style.padding = textareaStyle.padding;
+        highlight.style.border = textareaStyle.border;
+        highlight.style.boxSizing = textareaStyle.boxSizing;
+      };
       
-      while ((match = blankPattern.exec(text)) !== null) {
-        const start = match.index;
-        const end = start + blankMarker.length;
-        
-        // Check if cursor is inside or right after [blank]
-        if (isBackspace && cursorPos > start && cursorPos <= end) {
-          // Cursor is inside or at the end of [blank], delete the whole thing
-          e.preventDefault();
-          const newText = text.substring(0, start) + text.substring(end);
-          onChange(newText);
-          
-          // Set cursor position after deletion
-          setTimeout(() => {
-            textarea.setSelectionRange(start, start);
-          }, 0);
-          return;
-        }
-        
-        if (isDelete && cursorPos >= start && cursorPos < end) {
-          // Cursor is inside [blank], delete the whole thing
-          e.preventDefault();
-          const newText = text.substring(0, start) + text.substring(end);
-          onChange(newText);
-          
-          // Set cursor position after deletion
-          setTimeout(() => {
-            textarea.setSelectionRange(start, start);
-          }, 0);
-          return;
-        }
-      }
+      syncStyles();
+      const resizeObserver = new ResizeObserver(syncStyles);
+      resizeObserver.observe(textarea);
+      
+      return () => {
+        textarea.removeEventListener('scroll', handleScroll);
+        resizeObserver.disconnect();
+      };
     }
+  }, []);
+
+  // Simple: highlight ONLY [blank1], [blank2], etc.
+  const renderHighlightedText = (text: string) => {
+    if (!text) return null;
+    
+    // Split by pattern, keeping matches
+    const regex = /(\[blank\d+\])/g;
+    const parts = text.split(regex);
+    
+    return (
+      <>
+        {parts.map((part, index) => {
+          // Only highlight if it's exactly [blank + digits + ]
+          if (/^\[blank\d+\]$/.test(part)) {
+            return (
+              <span
+                key={index}
+                style={{
+                  backgroundColor: '#E6F4F7',
+                  color: '#174A5F',
+                  fontFamily: 'monospace',
+                  fontWeight: '500',
+                }}
+              >
+                {part}
+              </span>
+            );
+          }
+          return <span key={index}>{part}</span>;
+        })}
+      </>
+    );
   };
 
   return (
@@ -100,16 +122,16 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         </select>
         <div className="w-px h-6 bg-border-primary"></div>
         
-        {/* Insert Blank Button (only for blank-space questions) */}
+        {/* Insert Blank Button */}
         {onInsertBlank && (
           <>
             <button 
               onClick={onInsertBlank}
-              className="p-1.5 hover:bg-surface-tertiary rounded transition-colors text-text-secondary hover:text-text-primary" 
+              className="p-1.5 hover:bg-surface-tertiary rounded transition-colors text-text-secondary hover:text-text-primary font-mono text-sm" 
               aria-label="Insert blank"
               title="Insert blank"
             >
-              <span className="text-sm font-mono">[□-]</span>
+              [□-]
             </button>
             <div className="w-px h-6 bg-border-primary"></div>
           </>
@@ -195,15 +217,57 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         </button>
       </div>
       
-      {/* Textarea */}
-      <DeltaTextarea
-        value={value}
-        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => onChange(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        rows={rows}
-        className="w-full rounded-t-none border-t-0"
-      />
+      {/* Dual-layer editor: highlight div behind, textarea on top */}
+      <div className="relative border border-border-primary border-t-0 rounded-b-lg overflow-hidden">
+        {/* Highlight layer (behind textarea, shows colored markers) */}
+        <div
+          ref={highlightRef}
+          className="absolute inset-0 pointer-events-none overflow-auto"
+          style={{
+            minHeight: `${rows * 1.5}rem`,
+            padding: '0.75rem',
+            fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+            fontSize: '0.875rem',
+            lineHeight: '1.25rem',
+            letterSpacing: '0',
+            wordWrap: 'break-word',
+            whiteSpace: 'pre-wrap',
+            tabSize: 4,
+          }}
+        >
+          {value ? renderHighlightedText(value) : (
+            <span className="text-gray-400">{placeholder}</span>
+          )}
+        </div>
+        
+        {/* Textarea layer (on top, transparent text when focused to show highlights) */}
+        <textarea
+          ref={textareaRef}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          placeholder={!value ? placeholder : ''}
+          className="relative w-full bg-transparent resize-none focus:outline-none border-0 z-10"
+          style={{
+            minHeight: `${rows * 1.5}rem`,
+            padding: '0.75rem',
+            color: isFocused && value ? 'transparent' : 'inherit',
+            caretColor: '#174A5F',
+            fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+            fontSize: '0.875rem',
+            lineHeight: '1.25rem',
+            letterSpacing: '0',
+            wordWrap: 'break-word',
+            whiteSpace: 'pre-wrap',
+            tabSize: 4,
+            margin: '0',
+            border: '0',
+            outline: 'none',
+          }}
+          rows={rows}
+        />
+      </div>
     </div>
   );
 };

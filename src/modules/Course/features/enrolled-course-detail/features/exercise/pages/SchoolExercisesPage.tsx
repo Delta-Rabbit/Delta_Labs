@@ -14,6 +14,9 @@ interface SchoolExercisesPageProps {
   onStartExercise: (exerciseId: string) => void;
   onTakeWithFriend: (exerciseId: string) => void;
   onBack?: () => void;
+  onCustomizeExercise?: () => void;
+  onAddExercise?: () => void;
+  initialTab?: ExerciseTab;
 }
 
 export const SchoolExercisesPage: React.FC<SchoolExercisesPageProps> = ({
@@ -21,8 +24,18 @@ export const SchoolExercisesPage: React.FC<SchoolExercisesPageProps> = ({
   onStartExercise,
   onTakeWithFriend,
   onBack,
+  onCustomizeExercise,
+  onAddExercise,
+  initialTab,
 }) => {
-  const [activeTab, setActiveTab] = useState<ExerciseTab>('school');
+  const [activeTab, setActiveTab] = useState<ExerciseTab>(initialTab || 'school');
+  
+  // Update tab when initialTab prop changes
+  React.useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(2);
   const totalPages = 25;
@@ -31,7 +44,6 @@ export const SchoolExercisesPage: React.FC<SchoolExercisesPageProps> = ({
     { id: 'school' as ExerciseTab, label: 'School Exercises' },
     { id: 'community' as ExerciseTab, label: 'Community Exercise' },
     { id: 'my-exercise' as ExerciseTab, label: 'My Exercise' },
-    { id: 'add-question' as ExerciseTab, label: 'Add Question' },
   ];
 
   // Filter exercises by search query
@@ -68,16 +80,57 @@ export const SchoolExercisesPage: React.FC<SchoolExercisesPageProps> = ({
         </div>
       )}
 
-      {/* Tab Navigation */}
-      <TabBar
-        tabs={tabs}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
+      {/* Header with Tabs and Add Exercise Button */}
+      <div className="flex items-center justify-between mb-6">
+        <TabBar
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+        {onAddExercise && (
+          <DeltaButton
+            variant="primary"
+            size="md"
+            className="bg-primary-500 hover:bg-primary-600"
+            onClick={onAddExercise}
+          >
+            Add Exercise
+          </DeltaButton>
+        )}
+      </div>
 
-      {/* Search and Custom Exercise Button */}
-      <div className="flex items-center gap-4 mb-6">
-        <div className="flex-1 max-w-2xl">
+      {/* AI Customize Exercise and Search */}
+      <div className="flex items-center justify-center gap-4 mb-6 relative">
+        {/* AI Customize Exercise - Left of Search */}
+        {onCustomizeExercise && (
+          <button
+            onClick={onCustomizeExercise}
+            className="flex items-center gap-2 text-text-secondary hover:text-primary-600 transition-colors font-primary group absolute left-0"
+            aria-label="Customize Exercise"
+          >
+            <div className="w-5 h-5 flex items-center justify-center text-primary-600 group-hover:text-primary-700">
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                />
+              </svg>
+            </div>
+            <span className="font-medium text-sm">
+              Customize Exercise
+            </span>
+          </button>
+        )}
+        
+        {/* Search Bar - Centered */}
+        <div className="flex-1 max-w-2xl mx-auto">
           <SearchBar
             placeholder="Search"
             value={searchQuery}
@@ -86,13 +139,6 @@ export const SchoolExercisesPage: React.FC<SchoolExercisesPageProps> = ({
             showFilterIcon={true}
           />
         </div>
-        <DeltaButton
-          variant="primary"
-          size="md"
-          className="bg-primary-500 hover:bg-primary-600"
-        >
-          Custom Exercise
-        </DeltaButton>
       </div>
 
       {/* Exercise Grid */}
