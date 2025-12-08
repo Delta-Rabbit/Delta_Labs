@@ -18,7 +18,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   return (
     <div className="w-full font-primary">
       {/* Page Title */}
-      <h1 className="text-3xl font-bold text-text-primary mb-8 font-primary">
+      <h1 className="text-2xl font-bold text-text-primary mb-6 pb-2 border-b-2 border-primary-600 inline-block font-primary">
         Home
       </h1>
 

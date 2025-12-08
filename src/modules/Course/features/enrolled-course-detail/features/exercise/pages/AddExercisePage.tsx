@@ -5,6 +5,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { DeltaButton, DeltaDropdown, DeltaModal, DeltaCheckbox, DeltaRadio, DeltaTextarea, DeltaInput } from '../../../../../../../components/theme';
+import { RichTextEditor } from '../../qa/forms/RichTextEditor';
 import type { DropdownOption } from '../../../../../../../components/theme';
 
 interface AddExercisePageProps {
@@ -30,6 +31,11 @@ interface MatchingPair {
   right: string;
 }
 
+interface ExtraOption {
+  text: string;
+  side: 'left' | 'right';
+}
+
 interface Question {
   id: string;
   questionNumber: number;
@@ -41,6 +47,8 @@ interface Question {
   correctAnswer?: boolean;
   // Matching
   pairs?: MatchingPair[];
+  // Matching distractors / extra choices
+  extraOptions?: ExtraOption[];
   // Blank Space
   blanks?: string[];
   // Explanation
@@ -62,6 +70,7 @@ export const AddExercisePage: React.FC<AddExercisePageProps> = ({
       options: [],
       correctAnswer: false,
       pairs: [],
+      extraOptions: [],
       blanks: [],
       explanation: ''
     }
@@ -154,7 +163,7 @@ export const AddExercisePage: React.FC<AddExercisePageProps> = ({
         } else if (questionType === 'true-false') {
           return { ...baseQuestion, correctAnswer: q.correctAnswer !== undefined ? q.correctAnswer : false };
         } else if (questionType === 'matching') {
-          return { ...baseQuestion, pairs: q.pairs || [] };
+          return { ...baseQuestion, pairs: q.pairs || [], extraOptions: q.extraOptions || [] };
         } else if (questionType === 'blank-space') {
           // Initialize with empty blanks array - will be auto-populated when blanks are added
           return { ...baseQuestion, blanks: [] };
@@ -282,6 +291,55 @@ export const AddExercisePage: React.FC<AddExercisePageProps> = ({
         ...q,
         pairs: q.pairs?.filter((pair: MatchingPair) => pair.id !== pairId)
       } : q
+    ));
+  };
+
+  // Matching extra options handlers (distractors)
+  const handleAddExtraOption = (questionId: string, side: 'left' | 'right') => {
+    setQuestions(questions.map((q: Question) =>
+      q.id === questionId
+        ? {
+            ...q,
+            extraOptions: [...(q.extraOptions || []), { text: '', side }],
+          }
+        : q
+    ));
+  };
+
+  const handleUpdateExtraOption = (questionId: string, index: number, value: string) => {
+    setQuestions(questions.map((q: Question) =>
+      q.id === questionId
+        ? {
+            ...q,
+            extraOptions: (q.extraOptions || []).map((opt, i) =>
+              i === index ? { ...opt, text: value } : opt
+            ),
+          }
+        : q
+    ));
+  };
+
+  const handleUpdateExtraOptionSide = (questionId: string, index: number, side: 'left' | 'right') => {
+    setQuestions(questions.map((q: Question) =>
+      q.id === questionId
+        ? {
+            ...q,
+            extraOptions: (q.extraOptions || []).map((opt, i) =>
+              i === index ? { ...opt, side } : opt
+            ),
+          }
+        : q
+    ));
+  };
+
+  const handleRemoveExtraOption = (questionId: string, index: number) => {
+    setQuestions(questions.map((q: Question) =>
+      q.id === questionId
+        ? {
+            ...q,
+            extraOptions: (q.extraOptions || []).filter((_, i) => i !== index),
+          }
+        : q
     ));
   };
   // Blank Space handlers
@@ -825,6 +883,65 @@ export const AddExercisePage: React.FC<AddExercisePageProps> = ({
                                   </div>
                                 ))}
                               </div>
+                              {/* Extra options / distractors */}
+                              <div className="mt-4">
+                                <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <label className="block text-sm font-medium text-text-primary">
+                              Extra options (distractors)
+                            </label>
+                            <p className="text-xs text-gray-500">
+                              Add unpaired choices to either side.
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <DeltaButton
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => handleAddExtraOption(activeQuestion.id, 'left')}
+                            >
+                              + Add Left
+                            </DeltaButton>
+                            <DeltaButton
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => handleAddExtraOption(activeQuestion.id, 'right')}
+                            >
+                              + Add Right
+                            </DeltaButton>
+                          </div>
+                                </div>
+                                <div className="space-y-2">
+                          {(activeQuestion.extraOptions || []).map((opt: ExtraOption, index: number) => (
+                            <div key={index} className="flex items-center gap-3">
+                              <span className="text-xs font-semibold text-gray-600 uppercase px-2 py-1 bg-gray-100 rounded">
+                                {opt.side === 'left' ? 'Left' : 'Right'}
+                              </span>
+                              <input
+                                type="text"
+                                value={opt.text}
+                                onChange={(e) => handleUpdateExtraOption(activeQuestion.id, index, e.target.value)}
+                                placeholder="Extra choice text"
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#174A5F]"
+                              />
+                              <button
+                                onClick={() => handleRemoveExtraOption(activeQuestion.id, index)}
+                                className="text-red-500 hover:text-red-700 p-1"
+                                aria-label="Remove extra option"
+                              >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                              </button>
+                            </div>
+                          ))}
+                                  {(activeQuestion.extraOptions || []).length === 0 && (
+                                    <p className="text-xs text-gray-500">
+                                      Use extra options to add unpaired choices for students to match.
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
                             </div>
                           )}
 
@@ -1326,6 +1443,65 @@ export const AddExercisePage: React.FC<AddExercisePageProps> = ({
                             </button>
                           </div>
                         ))}
+                      </div>
+                      {/* Extra options / distractors */}
+                      <div className="mt-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <label className="block text-sm font-medium text-text-primary">
+                              Extra options (distractors)
+                            </label>
+                            <p className="text-xs text-gray-500">
+                              Add unpaired choices to either side.
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <DeltaButton
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => handleAddExtraOption(activeQuestion.id, 'left')}
+                            >
+                              + Add Left
+                            </DeltaButton>
+                            <DeltaButton
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => handleAddExtraOption(activeQuestion.id, 'right')}
+                            >
+                              + Add Right
+                            </DeltaButton>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          {(activeQuestion.extraOptions || []).map((opt: ExtraOption, index: number) => (
+                            <div key={index} className="flex items-center gap-3">
+                              <span className="text-xs font-semibold text-gray-600 uppercase px-2 py-1 bg-gray-100 rounded">
+                                {opt.side === 'left' ? 'Left' : 'Right'}
+                              </span>
+                              <input
+                                type="text"
+                                value={opt.text}
+                                onChange={(e) => handleUpdateExtraOption(activeQuestion.id, index, e.target.value)}
+                                placeholder="Extra choice text"
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#174A5F]"
+                              />
+                              <button
+                                onClick={() => handleRemoveExtraOption(activeQuestion.id, index)}
+                                className="text-red-500 hover:text-red-700 p-1"
+                                aria-label="Remove extra option"
+                              >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                              </button>
+                            </div>
+                          ))}
+                          {(activeQuestion.extraOptions || []).length === 0 && (
+                            <p className="text-xs text-gray-500">
+                              Use extra options to add unpaired choices for students to match.
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}

@@ -13,15 +13,19 @@ import CoursePage from '../modules/Course/components/CoursePage';
 // ============================================================================
 
 const CourseModuleContent = () => {
-  const { openTab } = useTab();
+  const { openTab, hasTab } = useTab();
 
   useEffect(() => {
-    openTab({
-      id: 'course',
-      label: 'Course',
-      module: 'course',
-    });
-  }, [openTab]);
+    // Only open Course tab if it doesn't exist
+    // Don't auto-open if user closed it
+    if (!hasTab('course')) {
+      openTab({
+        id: 'course',
+        label: 'Course',
+        module: 'course',
+      });
+    }
+  }, [openTab, hasTab]);
 
   return <CoursePage />;
 };
@@ -34,18 +38,21 @@ export function TabContentRouter() {
   const { tabs, getActiveTab } = useTab();
   const activeTab = getActiveTab();
 
-  // Always show Course module when no active tab
-  if (!activeTab || activeTab.module !== 'course') {
+  // Check if there's an active course tab
+  const hasActiveCourseTab = activeTab && activeTab.module === 'course';
+  
+  // If no active tab or active tab is not a course tab, show empty state
+  if (!hasActiveCourseTab) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface-secondary">
         <div className="text-center">
-          <p className="text-gray-500">Loading Course module...</p>
+          <p className="text-gray-500">No active course tab. Open a course to continue.</p>
         </div>
       </div>
     );
   }
 
-  // Render Course module
+  // Render Course module only if there's an active course tab
   return (
     <CourseProvider>
       <CourseModuleContent />

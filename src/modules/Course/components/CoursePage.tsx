@@ -21,12 +21,21 @@ interface CoursePageContentProps {
 }
 
 const CoursePageContent: React.FC<CoursePageContentProps> = ({ onSwitchToDemo }) => {
-  const { openTab, getActiveTab, tabs } = useTab();
+  const { openTab, getActiveTab, tabs, hasTab } = useTab();
 
-  // Open Course tab on mount if it doesn't exist
+  const activeTab = getActiveTab();
+
+  // Only render if Course tab is active
+  if (!activeTab || activeTab.module !== 'course') {
+    return null;
+  }
+
+  // Open Course tab on mount only if it doesn't exist AND we're in CoursePageContent
+  // This should only happen when navigating to course module, not when tab is closed
   React.useEffect(() => {
-    const courseTabExists = tabs.some(t => t.id === 'course');
-    if (!courseTabExists) {
+    // Only auto-open if we're actively in the course module and tab doesn't exist
+    // Don't auto-open if user explicitly closed the tab
+    if (!hasTab('course') && activeTab?.module === 'course') {
       openTab({
         id: 'course',
         label: 'Course',
@@ -36,14 +45,7 @@ const CoursePageContent: React.FC<CoursePageContentProps> = ({ onSwitchToDemo })
         },
       });
     }
-  }, [openTab, tabs]);
-
-  const activeTab = getActiveTab();
-
-  // Only render if Course tab is active
-  if (!activeTab || activeTab.module !== 'course') {
-    return null;
-  }
+  }, [openTab, hasTab, activeTab]);
 
   // Determine initial route based on active tab
   const getInitialRoute = () => {
@@ -119,7 +121,31 @@ const isValidCourseRoute = (path: string): boolean => {
 
 const CoursePageWithRouting: React.FC<CoursePageWithRoutingProps> = ({ onSwitchToDemo, activeTab }) => {
   const { currentRoute, navigate } = useCourseNavigation();
-  const { getActiveTab, tabs } = useTab();
+  const { getActiveTab, tabs, hasTab } = useTab();
+  
+  // Check if current route is enrolled course detail - bypass CourseLayout for it
+  // Enrolled course detail pages have their own full layout and don't need CourseLayout's secondary nav
+  const isEnrolledCourseDetail = currentRoute?.path?.startsWith('/enrolled/') && currentRoute.path !== '/enrolled';
+  
+  // Extract courseId from route if it's an enrolled course detail page
+  const courseIdMatch = isEnrolledCourseDetail ? currentRoute.path.match(/\/enrolled\/([^/]+)/) : null;
+  const courseId = courseIdMatch ? courseIdMatch[1] : null;
+  const courseDetailTabId = courseId ? `course-${courseId}` : null;
+  
+  // Check if course detail tab exists when on enrolled course detail page
+  const courseDetailTabExists = courseDetailTabId ? hasTab(courseDetailTabId) : true;
+  const currentActiveTab = getActiveTab();
+  const isCourseDetailTabActive = courseDetailTabId && currentActiveTab?.id === courseDetailTabId;
+  
+  // If we're on an enrolled course detail page but the tab doesn't exist or isn't active, navigate away
+  React.useEffect(() => {
+    if (isEnrolledCourseDetail && courseDetailTabId) {
+      if (!courseDetailTabExists || !isCourseDetailTabActive) {
+        // Tab was closed or is not active - navigate to enrolled courses list
+        navigate('/enrolled', {}, { replace: true });
+      }
+    }
+  }, [isEnrolledCourseDetail, courseDetailTabId, courseDetailTabExists, isCourseDetailTabActive, navigate]);
   
   // Sync navigation with active tab changes
   React.useEffect(() => {
@@ -155,12 +181,13 @@ const CoursePageWithRouting: React.FC<CoursePageWithRoutingProps> = ({ onSwitchT
     }
   }, [tabs, getActiveTab, navigate, currentRoute]);
   
-  // Check if current route is enrolled course detail - bypass CourseLayout for it
-  // Enrolled course detail pages have their own full layout and don't need CourseLayout's secondary nav
-  const isEnrolledCourseDetail = currentRoute?.path?.startsWith('/enrolled/') && currentRoute.path !== '/enrolled';
-  
-  // Enrolled course detail pages have their own full layout and don't need CourseLayout
+  // If we're on an enrolled course detail page, check if tab exists and is active
   if (isEnrolledCourseDetail) {
+    // Don't render if tab doesn't exist or isn't active
+    if (!courseDetailTabExists || !isCourseDetailTabActive) {
+      return null;
+    }
+    
     return <CourseRouter />;
   }
   

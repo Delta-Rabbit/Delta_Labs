@@ -106,7 +106,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
       </div>
 
       {/* Content Section - Aligned with image section padding */}
-      <div className="px-6 pt-6 pb-6">
+      <div className="pt-6 pb-6">
         {/* Action Buttons Row - Left edge aligns with course title, right edge aligns with reviews */}
         <div className="flex gap-3 mb-6">
           {isUnrolled ? (

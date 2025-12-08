@@ -10,7 +10,7 @@ interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
-  ro number;zzzz
+  rows?: number;
   className?: string;
   onInsertBlank?: () => void;
 }

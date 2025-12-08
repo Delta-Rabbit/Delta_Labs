@@ -5,10 +5,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { SidebarNavigation } from './components';
-import { HomePage, SchoolExercisesPage, ExerciseDetailPage, CustomizeExercisePage, AddExercisePage } from './pages';
+import { HomePage, SchoolExercisesPage, ExerciseDetailPage, CustomizeExercisePage, AddExercisePage, CommunityPage, TakeWithFriendPage, HistoryPage, TutorPage, NotificationsPage, TakeExercisePage } from './pages';
 import type { Exercise, CustomizeExerciseData, ExerciseTab } from './types';
 
-type ExerciseView = 'home' | 'school-exercises' | 'exercise-detail' | 'customize-exercise' | 'add-exercise' | 'people' | 'profile' | 'history' | 'education' | 'notifications';
+type ExerciseView = 'home' | 'school-exercises' | 'exercise-detail' | 'customize-exercise' | 'add-exercise' | 'community' | 'take-with-friend' | 'history' | 'tutor' | 'notifications' | 'take-exercise';
 
 const ExerciseTestPage: React.FC = () => {
   const [activeSidebarItem, setActiveSidebarItem] = useState<string>('home');
@@ -68,10 +68,10 @@ const ExerciseTestPage: React.FC = () => {
     setActiveSidebarItem(item);
     const viewMap: Record<string, ExerciseView> = {
       'home': 'home',
-      'people': 'people',
-      'profile': 'profile',
+      'community': 'community',
+      'take-with-friend': 'take-with-friend',
       'history': 'history',
-      'education': 'education',
+      'education': 'tutor',
       'notifications': 'notifications',
     };
     setActiveView(viewMap[item] || 'home');
@@ -90,7 +90,7 @@ const ExerciseTestPage: React.FC = () => {
     const exercise = exercises.find(e => e.id === exerciseId);
     if (exercise) {
       setSelectedExercise(exercise);
-      setActiveView('exercise-detail');
+      setActiveView('take-exercise');
     }
   };
 
@@ -173,12 +173,67 @@ const ExerciseTestPage: React.FC = () => {
           <ExerciseDetailPage
             exercise={selectedExercise}
             onStart={() => {
-              // TODO: Navigate to actual test/exercise taking interface
-              console.log('Starting exercise:', selectedExercise.id);
+              setActiveView('take-exercise');
             }}
             onBack={() => {
               setActiveView('school-exercises');
               setSelectedExercise(null);
+            }}
+          />
+        );
+      case 'take-exercise':
+        if (!selectedExercise) return null;
+        // Mock questions data - in real app, this would come from API
+        const mockQuestions = [
+          {
+            id: 'q1',
+            questionNumber: 1,
+            questionText: 'Graphically, the pair of equations 7x - y = 5; 21x - 3y = 10 represents two lines which are',
+            options: [
+              { id: 'a', label: 'A', text: 'Intersect at one point' },
+              { id: 'b', label: 'B', text: 'Parallel' },
+              { id: 'c', label: 'C', text: 'Intersect at two point' },
+              { id: 'd', label: 'D', text: 'Coincident' },
+            ],
+            correctAnswer: 'b',
+          },
+          {
+            id: 'q2',
+            questionNumber: 2,
+            questionText: 'What is the derivative of x²?',
+            options: [
+              { id: 'a', label: 'A', text: 'x' },
+              { id: 'b', label: 'B', text: '2x' },
+              { id: 'c', label: 'C', text: 'x²' },
+              { id: 'd', label: 'D', text: '2x²' },
+            ],
+            correctAnswer: 'b',
+          },
+          {
+            id: 'q3',
+            questionNumber: 3,
+            questionText: 'What is the value of π (pi) approximately?',
+            options: [
+              { id: 'a', label: 'A', text: '3.14' },
+              { id: 'b', label: 'B', text: '2.71' },
+              { id: 'c', label: 'C', text: '1.41' },
+              { id: 'd', label: 'D', text: '4.15' },
+            ],
+            correctAnswer: 'a',
+          },
+        ];
+        return (
+          <TakeExercisePage
+            exercise={selectedExercise}
+            questions={mockQuestions}
+            onExit={() => {
+              setActiveView('school-exercises');
+              setSelectedExercise(null);
+            }}
+            onComplete={(answers) => {
+              console.log('Exercise completed with answers:', answers);
+              // Don't navigate here - let the result screen handle navigation
+              // The result screen will call onExit when "End Exercise" is clicked
             }}
           />
         );
@@ -198,40 +253,58 @@ const ExerciseTestPage: React.FC = () => {
             onAddNextQuestion={handleAddNextQuestion}
           />
         );
-      case 'people':
+      case 'community':
         return (
-          <div className="w-full font-primary">
-            <h1 className="text-3xl font-bold text-text-primary mb-4 font-primary">People</h1>
-            <p className="text-text-secondary font-primary">People view coming soon...</p>
-          </div>
+          <CommunityPage
+            exercises={exercises}
+            onStartExercise={handleStartExercise}
+            onTakeWithFriend={handleTakeWithFriend}
+          />
         );
-      case 'profile':
+      case 'take-with-friend':
         return (
-          <div className="w-full font-primary">
-            <h1 className="text-3xl font-bold text-text-primary mb-4 font-primary">Profile</h1>
-            <p className="text-text-secondary font-primary">Profile view coming soon...</p>
-          </div>
+          <TakeWithFriendPage
+            onStartExercise={handleStartExercise}
+            onTakeWithFriend={handleTakeWithFriend}
+          />
         );
       case 'history':
         return (
-          <div className="w-full font-primary">
-            <h1 className="text-3xl font-bold text-text-primary mb-4 font-primary">History</h1>
-            <p className="text-text-secondary font-primary">History view coming soon...</p>
-          </div>
+          <HistoryPage
+            onViewExercise={(exerciseId) => {
+              const exercise = exercises.find(e => e.id === exerciseId);
+              if (exercise) {
+                setSelectedExercise(exercise);
+                setActiveView('exercise-detail');
+              }
+            }}
+            onRetakeExercise={(exerciseId) => {
+              handleStartExercise(exerciseId);
+            }}
+          />
         );
-      case 'education':
+      case 'tutor':
         return (
-          <div className="w-full font-primary">
-            <h1 className="text-3xl font-bold text-text-primary mb-4 font-primary">Education</h1>
-            <p className="text-text-secondary font-primary">Education view coming soon...</p>
-          </div>
+          <TutorPage
+            onInviteTutor={(tutorId) => {
+              console.log('Inviting tutor:', tutorId);
+            }}
+            onMessageTutor={(tutorId) => {
+              console.log('Messaging tutor:', tutorId);
+            }}
+            onBroadcast={() => {
+              console.log('Broadcasting...');
+            }}
+          />
         );
       case 'notifications':
         return (
-          <div className="w-full font-primary">
-            <h1 className="text-3xl font-bold text-text-primary mb-4 font-primary">Notifications</h1>
-            <p className="text-text-secondary font-primary">Notifications view coming soon...</p>
-          </div>
+          <NotificationsPage
+            onGoToExercise={(notificationId) => {
+              console.log('Go to exercise for notification:', notificationId);
+              // TODO: Navigate to exercise based on notification
+            }}
+          />
         );
       default:
         return null;
@@ -240,8 +313,8 @@ const ExerciseTestPage: React.FC = () => {
 
   return (
     <div className="w-full font-primary py-6 relative">
-      {/* Left Sidebar Navigation - Hidden on detail, customize, and add-exercise pages */}
-      {activeView !== 'exercise-detail' && activeView !== 'customize-exercise' && activeView !== 'add-exercise' && (
+      {/* Left Sidebar Navigation - Hidden on detail, customize, add-exercise, and take-exercise pages */}
+      {activeView !== 'exercise-detail' && activeView !== 'customize-exercise' && activeView !== 'add-exercise' && activeView !== 'take-exercise' && (
         <SidebarNavigation
           activeItem={activeSidebarItem}
           onItemChange={handleSidebarItemChange}

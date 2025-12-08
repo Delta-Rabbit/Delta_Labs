@@ -133,7 +133,7 @@ export const CustomizeExercisePage: React.FC<CustomizeExercisePageProps> = ({
       </div>
 
       {/* Page Title */}
-      <h1 className="text-3xl font-bold text-[#174A5F] mb-8 font-primary">
+      <h1 className="text-2xl font-bold text-text-primary mb-6 pb-2 border-b-2 border-primary-600 inline-block font-primary">
         Customize your Exercise
       </h1>
 
