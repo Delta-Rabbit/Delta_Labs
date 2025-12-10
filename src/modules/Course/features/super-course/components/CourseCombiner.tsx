@@ -657,11 +657,11 @@ const CourseCombiner: React.FC<CourseCombinerProps> = ({
       }
       return {
         x: centerX,
-        y: 160,
-        level: 0,
-      };
-    }
-
+          y: 160,
+          level: 0,
+        };
+      }
+      
     if (nodeType === 'section') {
       const sortedByY = [...roadmapNodes].sort((a, b) => b.position.y - a.position.y);
       const bottommostNode = sortedByY[0];
@@ -731,7 +731,7 @@ const CourseCombiner: React.FC<CourseCombinerProps> = ({
     const isRoadmapContent = e.dataTransfer.types.includes('application/x-roadmap-content');
     if (isRoadmapContent) {
       e.dataTransfer.dropEffect = 'none';
-      setIsDraggingOver(false);
+    setIsDraggingOver(false);
       return;
     }
     
@@ -907,11 +907,11 @@ const CourseCombiner: React.FC<CourseCombinerProps> = ({
             onToggleSection={(sectionId: string) => toggleSection(sectionId, selectedCourses[0]?.id)}
             onSectionDragStart={(e, section) => handleDragStart(e, 'section', section)}
             onContentDragStart={(e, content) => handleDragStart(e, 'content', content)}
-            onDragEnd={handleDragEnd}
+                      onDragEnd={handleDragEnd}
             onPreviewContent={(content: CourseContentItem) => {
-              setPreviewContent(content);
-              setIsPreviewModalOpen(true);
-            }}
+                                setPreviewContent(content);
+                                setIsPreviewModalOpen(true);
+                              }}
             onChangeCourse={() => handleChangeCourse(0)}
           />
         </div>
@@ -922,8 +922,8 @@ const CourseCombiner: React.FC<CourseCombinerProps> = ({
           <CourseCombinerToolbar
             onAddSection={() => setIsCreateSectionModalOpen(true)}
             onDone={() => {
-              console.log('Done clicked');
-            }}
+                console.log('Done clicked');
+              }}
           />
 
           {/* Canvas Area - Drop Zone for Combined Course */}
@@ -1049,14 +1049,14 @@ const CourseCombiner: React.FC<CourseCombinerProps> = ({
                                   [node.id]: !prev[node.id]
                                 }));
                               }}
-                              onDragStart={(e) => {
-                                if (!usedItems.has(sectionData.id)) {
-                                  handleDragStart(e, 'section', sectionData);
-                                } else {
-                                  e.preventDefault();
-                                }
-                              }}
-                              onDragEnd={handleDragEnd}
+                        onDragStart={(e) => {
+                          if (!usedItems.has(sectionData.id)) {
+                            handleDragStart(e, 'section', sectionData);
+                          } else {
+                            e.preventDefault();
+                          }
+                        }}
+                        onDragEnd={handleDragEnd}
                               onRemove={() => handleRemoveNode(node.id)}
                             />
 
@@ -1115,34 +1115,34 @@ const CourseCombiner: React.FC<CourseCombinerProps> = ({
                                   
                                   // If dropping directly on content area (not on a content item), handle it
                                   if (!isContentItem) {
-                                    const isRoadmapContent = e.dataTransfer.types.includes('application/x-roadmap-content');
-                                    const isDraggingContent = draggedContentId !== null && draggedContentSectionId !== null;
-                                    const hasContentTypes = e.dataTransfer.types.includes('application/json');
-                                    const isSidePanel = e.dataTransfer.types.includes('application/x-side-panel');
-                                    
-                                    const isDraggingFromSidePanel = !isRoadmapContent && !isDraggingContent && hasContentTypes && isSidePanel;
-                                    const isDraggingFromDifferentSection = isRoadmapContent && isDraggingContent && draggedContentSectionId !== node.id;
-                                    
+                                  const isRoadmapContent = e.dataTransfer.types.includes('application/x-roadmap-content');
+                                  const isDraggingContent = draggedContentId !== null && draggedContentSectionId !== null;
+                                  const hasContentTypes = e.dataTransfer.types.includes('application/json');
+                                  const isSidePanel = e.dataTransfer.types.includes('application/x-side-panel');
+                                  
+                                  const isDraggingFromSidePanel = !isRoadmapContent && !isDraggingContent && hasContentTypes && isSidePanel;
+                                  const isDraggingFromDifferentSection = isRoadmapContent && isDraggingContent && draggedContentSectionId !== node.id;
+                                  
                                     // Only handle if dragging from side panel or different section
                                     // If reordering within same section, let content items handle it
-                                    if (isDraggingFromSidePanel || isDraggingFromDifferentSection) {
-                                      e.preventDefault();
+                                  if (isDraggingFromSidePanel || isDraggingFromDifferentSection) {
+                                    e.preventDefault();
                                       e.stopPropagation();
-                                      setHoveredSectionContentArea(null);
-                                      handleNodeDrop(e, node.id);
+                                    setHoveredSectionContentArea(null);
+                                    handleNodeDrop(e, node.id);
                                     }
                                   }
                                 }}
                                 style={{ pointerEvents: 'auto' }}
                               >
-                                {sectionData.contents && 
-                                 Array.isArray(sectionData.contents) && 
-                                 sectionData.contents.length > 0 && 
+                            {sectionData.contents && 
+                             Array.isArray(sectionData.contents) && 
+                             sectionData.contents.length > 0 && 
                                  sectionData.contents.map((content: CourseContentItem) => {
-                                  const isLeft = content.type === 'audio';
+                              const isLeft = content.type === 'audio';
                                   const timelineCenterOffset = '-2rem';
-                                  
-                                  return (
+                              
+                              return (
                                     <CanvasContentItem
                                       key={content.id}
                                       content={content}
@@ -1151,18 +1151,18 @@ const CourseCombiner: React.FC<CourseCombinerProps> = ({
                                       isHovered={hoveredContentId === content.id}
                                       timelineCenterOffset={timelineCenterOffset}
                                       onDragStart={(e: DragEvent) => {
-                                        e.stopPropagation();
-                                        setDraggedContentId(content.id);
-                                        setDraggedContentSectionId(node.id);
-                                        e.dataTransfer.setData('application/x-dragged-content-id', content.id);
-                                        e.dataTransfer.setData('application/x-roadmap-content', 'true');
-                                        e.dataTransfer.effectAllowed = 'move';
-                                      }}
+                                    e.stopPropagation();
+                                    setDraggedContentId(content.id);
+                                    setDraggedContentSectionId(node.id);
+                                    e.dataTransfer.setData('application/x-dragged-content-id', content.id);
+                                    e.dataTransfer.setData('application/x-roadmap-content', 'true');
+                                    e.dataTransfer.effectAllowed = 'move';
+                                  }}
                                       onDragOver={(e: DragEvent) => {
                                         // Check if we're reordering content within the same section
-                                        const isRoadmapContent = e.dataTransfer.types.includes('application/x-roadmap-content');
-                                        const isDraggingContent = draggedContentId !== null && draggedContentSectionId !== null;
-                                        
+                                    const isRoadmapContent = e.dataTransfer.types.includes('application/x-roadmap-content');
+                                    const isDraggingContent = draggedContentId !== null && draggedContentSectionId !== null;
+                                    
                                         // Only handle if dragging content from the same section (for reordering)
                                         if (isDraggingContent && draggedContentSectionId === node.id && draggedContentId !== content.id) {
                                           e.preventDefault();
@@ -1175,22 +1175,22 @@ const CourseCombiner: React.FC<CourseCombinerProps> = ({
                                         // Don't handle if dragging from side panel or different section - let parent handle it
                                         const isSidePanel = e.dataTransfer.types.includes('application/x-side-panel');
                                         const isDraggingFromSidePanel = !isRoadmapContent && !isDraggingContent && isSidePanel;
-                                        const isDraggingFromDifferentSection = isRoadmapContent && isDraggingContent && draggedContentSectionId !== node.id;
-                                        
-                                        if (isDraggingFromSidePanel || isDraggingFromDifferentSection) {
-                                          return;
-                                        }
+                                    const isDraggingFromDifferentSection = isRoadmapContent && isDraggingContent && draggedContentSectionId !== node.id;
+                                    
+                                    if (isDraggingFromSidePanel || isDraggingFromDifferentSection) {
+                                      return;
+                                    }
                                       }}
                                       onDragLeave={(e: DragEvent) => {
-                                        const relatedTarget = e.relatedTarget as HTMLElement;
-                                        if (!relatedTarget || !e.currentTarget.contains(relatedTarget)) {
-                                          setHoveredContentId(null);
-                                        }
-                                      }}
+                                    const relatedTarget = e.relatedTarget as HTMLElement;
+                                    if (!relatedTarget || !e.currentTarget.contains(relatedTarget)) {
+                                      setHoveredContentId(null);
+                                    }
+                                  }}
                                       onDrop={(e: DragEvent) => {
                                         // Check if we're reordering content within the same section
-                                        const isDraggingContent = draggedContentId !== null && draggedContentSectionId !== null;
-                                        
+                                    const isDraggingContent = draggedContentId !== null && draggedContentSectionId !== null;
+                                    
                                         // Handle reordering within same section
                                         if (isDraggingContent && draggedContentSectionId === node.id && draggedContentId !== content.id) {
                                           e.preventDefault();
@@ -1205,54 +1205,54 @@ const CourseCombiner: React.FC<CourseCombinerProps> = ({
                                         const isSidePanel = e.dataTransfer.types.includes('application/x-side-panel');
                                         const isRoadmapContent = e.dataTransfer.types.includes('application/x-roadmap-content');
                                         const isDraggingFromSidePanel = !isRoadmapContent && !isDraggingContent && isSidePanel;
-                                        const isDraggingFromDifferentSection = isRoadmapContent && isDraggingContent && draggedContentSectionId !== node.id;
-                                        
-                                        if (isDraggingFromSidePanel || isDraggingFromDifferentSection) {
-                                          return;
-                                        }
-                                        
+                                    const isDraggingFromDifferentSection = isRoadmapContent && isDraggingContent && draggedContentSectionId !== node.id;
+                                    
+                                    if (isDraggingFromSidePanel || isDraggingFromDifferentSection) {
+                                      return;
+                                    }
+                                    
                                         // Prevent default for other cases
-                                        e.preventDefault();
-                                        e.stopPropagation();
+                                      e.preventDefault();
+                                      e.stopPropagation();
                                       }}
                                       onDragEnd={(e: DragEvent) => {
-                                        const dropEffect = e.dataTransfer.dropEffect;
-                                        if (dropEffect === 'none' || dropEffect === '') {
-                                          e.preventDefault();
-                                        }
-                                        setDraggedContentId(null);
-                                        setDraggedContentSectionId(null);
-                                        setHoveredContentId(null);
-                                      }}
+                                    const dropEffect = e.dataTransfer.dropEffect;
+                                    if (dropEffect === 'none' || dropEffect === '') {
+                                      e.preventDefault();
+                                    }
+                                    setDraggedContentId(null);
+                                    setDraggedContentSectionId(null);
+                                    setHoveredContentId(null);
+                                  }}
                                       onRemove={() => {
-                                        const updatedSection = {
-                                          ...sectionData,
-                                          contents: sectionData.contents.filter((c: CourseContentItem) => c.id !== content.id)
-                                        };
-                                        setRoadmapNodes((prev: RoadmapNode[]) => prev.map((n: RoadmapNode) => 
-                                          n.id === node.id ? { ...n, data: updatedSection } : n
-                                        ));
-                                        
+                                      const updatedSection = {
+                                        ...sectionData,
+                                        contents: sectionData.contents.filter((c: CourseContentItem) => c.id !== content.id)
+                                      };
+                                      setRoadmapNodes((prev: RoadmapNode[]) => prev.map((n: RoadmapNode) => 
+                                        n.id === node.id ? { ...n, data: updatedSection } : n
+                                      ));
+                                      
                                         setUsedItems((prev: Set<string>) => {
-                                          const newSet = new Set(prev);
-                                          newSet.delete(content.id);
-                                          return newSet;
-                                        });
-                                      }}
+                                        const newSet = new Set(prev);
+                                        newSet.delete(content.id);
+                                        return newSet;
+                                      });
+                                    }}
                                       onPreview={() => {
                                         setPreviewContent(content);
                                         setIsPreviewModalOpen(true);
                                       }}
                                     />
-                                  );
-                                })}
+                              );
+                            })}
                               </div>
                             )}
                           </div>
                         )}
-                      </div>
-                    );
-                  })}
+                  </div>
+                );
+              })}
               </div>
             </div>
           </div>
@@ -1269,11 +1269,11 @@ const CourseCombiner: React.FC<CourseCombinerProps> = ({
               onToggleSection={(sectionId: string) => toggleSection(sectionId, selectedCourses[1]?.id)}
               onSectionDragStart={(e, section) => handleDragStart(e, 'section', section)}
               onContentDragStart={(e, content) => handleDragStart(e, 'content', content)}
-              onDragEnd={handleDragEnd}
+                      onDragEnd={handleDragEnd}
               onPreviewContent={(content: CourseContentItem) => {
-                setPreviewContent(content);
-                setIsPreviewModalOpen(true);
-              }}
+                                    setPreviewContent(content);
+                                    setIsPreviewModalOpen(true);
+                                  }}
               onChangeCourse={() => handleChangeCourse(1)}
             />
           ) : (

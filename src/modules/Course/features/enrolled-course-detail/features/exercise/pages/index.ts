@@ -14,4 +14,5 @@ export { TutorPage } from './TutorPage';
 export { NotificationsPage } from './NotificationsPage';
 export { TakeExercisePage } from './TakeExercisePage';
 export { ExerciseResultPage } from './ExerciseResultPage';
+export { TakeWithFriendSessionPage } from './TakeWithFriendSessionPage';
 

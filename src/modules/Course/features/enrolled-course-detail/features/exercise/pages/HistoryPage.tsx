@@ -300,4 +300,3 @@ export const HistoryPage: React.FC<HistoryPageProps> = ({
 };
 
 export default HistoryPage;
-

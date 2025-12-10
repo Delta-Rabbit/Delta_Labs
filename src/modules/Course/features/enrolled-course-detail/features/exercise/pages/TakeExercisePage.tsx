@@ -7,18 +7,51 @@ import React, { useState, useEffect } from 'react';
 import { ExerciseSidebar } from '../components';
 import { ExerciseResultPage } from './ExerciseResultPage';
 import type { Exercise } from '../types';
+import { DeltaDropdown } from '../../../../../../../components/theme';
 
-interface Question {
+type QuestionType = 'multiple-choice' | 'true-false' | 'matching' | 'blank' | 'short-answer';
+
+interface BaseQuestion {
   id: string;
   questionNumber: number;
   questionText: string;
+  type: QuestionType;
+  correctAnswer?: string;
+}
+
+interface MCQQuestion extends BaseQuestion {
+  type: 'multiple-choice' | 'true-false';
   options: {
     id: string;
     label: string;
     text: string;
   }[];
-  correctAnswer?: string;
 }
+
+interface MatchingQuestion extends BaseQuestion {
+  type: 'matching';
+  rightOptions: {
+    id: string;
+    text: string;
+  }[];
+  pairs: {
+    leftId: string;
+    leftText: string;
+    correctRightId?: string;
+  }[];
+}
+
+interface BlankQuestion extends BaseQuestion {
+  type: 'blank';
+  placeholder?: string;
+}
+
+interface ShortAnswerQuestion extends BaseQuestion {
+  type: 'short-answer';
+  placeholder?: string;
+}
+
+type Question = MCQQuestion | MatchingQuestion | BlankQuestion | ShortAnswerQuestion;
 
 interface TakeExercisePageProps {
   exercise: Exercise;
@@ -68,6 +101,32 @@ export const TakeExercisePage: React.FC<TakeExercisePageProps> = ({
     setAnswers({
       ...answers,
       [currentQuestion.id]: optionId,
+    });
+  };
+
+  const handleTextAnswer = (value: string) => {
+    setAnswers({
+      ...answers,
+      [currentQuestion.id]: value,
+    });
+  };
+
+  const getMatchingSelections = (questionId: string) => {
+    const stored = answers[questionId];
+    if (!stored) return {};
+    try {
+      return JSON.parse(stored) as Record<string, string>;
+    } catch {
+      return {};
+    }
+  };
+
+  const handleMatchingSelect = (leftId: string, rightId: string) => {
+    const currentSelections = getMatchingSelections(currentQuestion.id);
+    const updated = { ...currentSelections, [leftId]: rightId };
+    setAnswers({
+      ...answers,
+      [currentQuestion.id]: JSON.stringify(updated),
     });
   };
 
@@ -139,6 +198,159 @@ export const TakeExercisePage: React.FC<TakeExercisePageProps> = ({
     return ''; // transparent - no padding needed
   };
 
+  const renderQuestionBody = () => {
+    switch (currentQuestion.type) {
+      case 'multiple-choice':
+      case 'true-false': {
+        const currentSelected = answers[currentQuestion.id] ?? selectedAnswer;
+        const options = currentQuestion.options;
+        return (
+          <div className="space-y-3 mb-8">
+            {options.map((option) => (
+              <button
+                key={option.id}
+                onClick={() => handleAnswerSelect(option.id)}
+                className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                  currentSelected === option.id
+                    ? 'border-primary-600 bg-primary-50 text-primary-700'
+                    : 'border-border-primary bg-white text-text-primary hover:border-primary-300 hover:bg-primary-50/50'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold text-lg min-w-[32px]">
+                    {option.label}.
+                  </span>
+                  <span>{option.text}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        );
+      }
+      case 'blank': {
+        const currentValue = answers[currentQuestion.id] ?? '';
+        return (
+          <div className="mb-8">
+            <input
+              type="text"
+              value={currentValue}
+              onChange={(e) => handleTextAnswer(e.target.value)}
+              placeholder={currentQuestion.placeholder || 'Type your answer'}
+              className="w-full px-4 py-3 border-2 border-border-primary rounded-lg focus:border-primary-500 focus:outline-none"
+            />
+          </div>
+        );
+      }
+      case 'short-answer': {
+        const currentValue = answers[currentQuestion.id] ?? '';
+        return (
+          <div className="mb-8">
+            <textarea
+              value={currentValue}
+              onChange={(e) => handleTextAnswer(e.target.value)}
+              placeholder={currentQuestion.placeholder || 'Write your answer'}
+              className="w-full px-4 py-3 min-h-[140px] border-2 border-border-primary rounded-lg focus:border-primary-500 focus:outline-none"
+            />
+          </div>
+        );
+      }
+      case 'matching': {
+        const selections = getMatchingSelections(currentQuestion.id);
+        const rightOptionsWithLetters = currentQuestion.rightOptions.map((opt, idx) => ({
+          ...opt,
+          letter: String.fromCharCode(65 + idx),
+        }));
+
+        return (
+          <div className="mb-8 space-y-3">
+            <div className="grid grid-cols-2 md:grid-cols-[1.2fr_1fr] text-sm font-semibold text-text-secondary px-1 text-center">
+              <span className="justify-self-center">Column A</span>
+              <span className="justify-self-center">Column B</span>
+            </div>
+            <div className="grid gap-4 md:grid-cols-[1.2fr_1fr]">
+              <div className="space-y-3">
+                {currentQuestion.pairs.map((pair) => (
+                  <div
+                    key={pair.leftId}
+                    className="flex items-center gap-3 p-3 border border-border-primary rounded-lg bg-white"
+                  >
+                    <div className="w-16">
+                      <DeltaDropdown
+                        value={selections[pair.leftId] || ''}
+                        onChange={(val) => handleMatchingSelect(pair.leftId, val)}
+                        options={rightOptionsWithLetters.map((opt) => ({
+                          value: opt.id,
+                          label: opt.letter,
+                        }))}
+                        placeholder="Select"
+                        size="sm"
+                      />
+                    </div>
+                    <span className="font-medium text-text-primary">{pair.leftText}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                {rightOptionsWithLetters.map((opt) => (
+                  <div
+                    key={opt.id}
+                    className="flex items-center gap-3 p-3 border border-border-primary rounded-lg bg-white"
+                  >
+                    <span className="flex items-center justify-center w-8 h-8 rounded-md bg-primary-50 text-primary-700 font-semibold text-sm">
+                      {opt.letter}
+                    </span>
+                    <span className="font-medium text-text-primary">{opt.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      }
+      default:
+        return null;
+    }
+  };
+
+  const renderAnswerReveal = () => {
+    if (!showAnswer || !currentQuestion.correctAnswer) return null;
+
+    if (currentQuestion.type === 'matching') {
+      return (
+        <div className="mb-8 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-sm font-medium text-green-800 mb-2">Correct Matches:</p>
+          <div className="space-y-2">
+            {currentQuestion.pairs.map((pair) => {
+              const right = currentQuestion.rightOptions.find((r) => r.id === pair.correctRightId);
+              return (
+                <div key={pair.leftId} className="flex items-center gap-2 text-green-700">
+                  <span className="font-semibold">{pair.leftText}</span>
+                  <span className="text-green-800">→</span>
+                  <span>{right?.text || '—'}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    const answerText =
+      currentQuestion.type === 'multiple-choice' || currentQuestion.type === 'true-false'
+        ? currentQuestion.options.find((opt) => opt.id === currentQuestion.correctAnswer)?.text
+        : currentQuestion.correctAnswer;
+
+    return (
+      <div className="mb-8 p-4 bg-green-50 border border-green-200 rounded-lg">
+        <p className="text-sm font-medium text-green-800 mb-2">Correct Answer:</p>
+        <p className="text-green-700">
+          {answerText}
+        </p>
+      </div>
+    );
+  };
+
   return (
     <div className="fixed inset-0 top-[60px] bottom-0 left-0 right-0 w-full h-[calc(100vh-60px)] flex font-primary bg-white overflow-hidden z-[100]">
       {/* Main Content Area */}
@@ -167,27 +379,8 @@ export const TakeExercisePage: React.FC<TakeExercisePageProps> = ({
             </p>
           </div>
 
-          {/* Answer Options */}
-          <div className="space-y-3 mb-8">
-            {currentQuestion.options.map((option) => (
-              <button
-                key={option.id}
-                onClick={() => handleAnswerSelect(option.id)}
-                className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                  selectedAnswer === option.id
-                    ? 'border-primary-600 bg-primary-50 text-primary-700'
-                    : 'border-border-primary bg-white text-text-primary hover:border-primary-300 hover:bg-primary-50/50'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <span className="font-semibold text-lg min-w-[32px]">
-                    {option.label}.
-                  </span>
-                  <span>{option.text}</span>
-                </div>
-              </button>
-            ))}
-          </div>
+          {/* Answer Area */}
+          {renderQuestionBody()}
 
           {/* Action Links */}
           <div className="flex items-center gap-6 mb-8 text-sm">
@@ -209,14 +402,7 @@ export const TakeExercisePage: React.FC<TakeExercisePageProps> = ({
           </div>
 
           {/* Answer Display (if shown) */}
-          {showAnswer && currentQuestion.correctAnswer && (
-            <div className="mb-8 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm font-medium text-green-800 mb-2">Correct Answer:</p>
-              <p className="text-green-700">
-                {currentQuestion.options.find(opt => opt.id === currentQuestion.correctAnswer)?.text}
-              </p>
-            </div>
-          )}
+          {renderAnswerReveal()}
 
           {/* Navigation Buttons */}
           <div className="flex items-center justify-between pt-6 border-t border-border-primary">

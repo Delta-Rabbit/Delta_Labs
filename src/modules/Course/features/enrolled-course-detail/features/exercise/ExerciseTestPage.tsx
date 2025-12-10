@@ -5,10 +5,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { SidebarNavigation } from './components';
-import { HomePage, SchoolExercisesPage, ExerciseDetailPage, CustomizeExercisePage, AddExercisePage, CommunityPage, TakeWithFriendPage, HistoryPage, TutorPage, NotificationsPage, TakeExercisePage } from './pages';
+import { HomePage, SchoolExercisesPage, ExerciseDetailPage, CustomizeExercisePage, AddExercisePage, CommunityPage, TakeWithFriendPage, HistoryPage, TutorPage, NotificationsPage, TakeExercisePage, TakeWithFriendSessionPage } from './pages';
 import type { Exercise, CustomizeExerciseData, ExerciseTab } from './types';
 
-type ExerciseView = 'home' | 'school-exercises' | 'exercise-detail' | 'customize-exercise' | 'add-exercise' | 'community' | 'take-with-friend' | 'history' | 'tutor' | 'notifications' | 'take-exercise';
+type ExerciseView = 'home' | 'school-exercises' | 'exercise-detail' | 'customize-exercise' | 'add-exercise' | 'community' | 'take-with-friend' | 'take-with-friend-session' | 'history' | 'tutor' | 'notifications' | 'take-exercise';
 
 const ExerciseTestPage: React.FC = () => {
   const [activeSidebarItem, setActiveSidebarItem] = useState<string>('home');
@@ -94,9 +94,24 @@ const ExerciseTestPage: React.FC = () => {
     }
   };
 
+  const handleStartExerciseWithFriend = (exerciseId: string) => {
+    const exercise = exercises.find(e => e.id === exerciseId);
+    if (exercise) {
+      setSelectedExercise(exercise);
+      setActiveView('take-with-friend-session');
+    }
+  };
+
+  const handleStartExerciseWithFriendObj = (exercise: Exercise) => {
+    setSelectedExercise(exercise);
+    setActiveView('take-with-friend-session');
+  };
+
   const handleTakeWithFriend = (exerciseId: string) => {
-    // TODO: Open take with friend modal/page
-    console.log('Take with friend:', exerciseId);
+    const exercise = exercises.find(e => e.id === exerciseId);
+    if (exercise) {
+      handleStartExerciseWithFriendObj(exercise);
+    }
   };
 
   const handleCustomizeExercise = () => {
@@ -181,7 +196,7 @@ const ExerciseTestPage: React.FC = () => {
             }}
           />
         );
-      case 'take-exercise':
+      case 'take-exercise': {
         if (!selectedExercise) return null;
         // Mock questions data - in real app, this would come from API
         const mockQuestions = [
@@ -189,6 +204,7 @@ const ExerciseTestPage: React.FC = () => {
             id: 'q1',
             questionNumber: 1,
             questionText: 'Graphically, the pair of equations 7x - y = 5; 21x - 3y = 10 represents two lines which are',
+            type: 'multiple-choice',
             options: [
               { id: 'a', label: 'A', text: 'Intersect at one point' },
               { id: 'b', label: 'B', text: 'Parallel' },
@@ -200,26 +216,45 @@ const ExerciseTestPage: React.FC = () => {
           {
             id: 'q2',
             questionNumber: 2,
-            questionText: 'What is the derivative of x²?',
+            questionText: 'The Earth revolves around the Sun.',
+            type: 'true-false',
             options: [
-              { id: 'a', label: 'A', text: 'x' },
-              { id: 'b', label: 'B', text: '2x' },
-              { id: 'c', label: 'C', text: 'x²' },
-              { id: 'd', label: 'D', text: '2x²' },
+              { id: 'true', label: 'A', text: 'True' },
+              { id: 'false', label: 'B', text: 'False' },
             ],
-            correctAnswer: 'b',
+            correctAnswer: 'true',
           },
           {
             id: 'q3',
             questionNumber: 3,
-            questionText: 'What is the value of π (pi) approximately?',
-            options: [
-              { id: 'a', label: 'A', text: '3.14' },
-              { id: 'b', label: 'B', text: '2.71' },
-              { id: 'c', label: 'C', text: '1.41' },
-              { id: 'd', label: 'D', text: '4.15' },
+            questionText: 'Match the scientist to their discovery.',
+            type: 'matching',
+            rightOptions: [
+              { id: 'gravity', text: 'Gravity' },
+              { id: 'radioactivity', text: 'Radioactivity' },
+              { id: 'relativity', text: 'Theory of Relativity' },
             ],
-            correctAnswer: 'a',
+            pairs: [
+              { leftId: 'newton', leftText: 'Isaac Newton', correctRightId: 'gravity' },
+              { leftId: 'curie', leftText: 'Marie Curie', correctRightId: 'radioactivity' },
+              { leftId: 'einstein', leftText: 'Albert Einstein', correctRightId: 'relativity' },
+            ],
+          },
+          {
+            id: 'q4',
+            questionNumber: 4,
+            questionText: 'Fill in the blank: H2O is the chemical formula for ____.',
+            type: 'blank',
+            correctAnswer: 'water',
+            placeholder: 'Your answer',
+          },
+          {
+            id: 'q5',
+            questionNumber: 5,
+            questionText: 'Briefly explain Newton’s second law of motion.',
+            type: 'short-answer',
+            correctAnswer: 'Force equals mass times acceleration',
+            placeholder: 'Write a short answer',
           },
         ];
         return (
@@ -230,13 +265,14 @@ const ExerciseTestPage: React.FC = () => {
               setActiveView('school-exercises');
               setSelectedExercise(null);
             }}
-            onComplete={(answers) => {
+            onComplete={(answers: Record<string, string>) => {
               console.log('Exercise completed with answers:', answers);
               // Don't navigate here - let the result screen handle navigation
               // The result screen will call onExit when "End Exercise" is clicked
             }}
           />
         );
+      }
       case 'customize-exercise':
         return (
           <CustomizeExercisePage
@@ -258,27 +294,41 @@ const ExerciseTestPage: React.FC = () => {
           <CommunityPage
             exercises={exercises}
             onStartExercise={handleStartExercise}
-            onTakeWithFriend={handleTakeWithFriend}
+            onTakeWithFriend={handleStartExerciseWithFriend}
           />
         );
       case 'take-with-friend':
         return (
           <TakeWithFriendPage
-            onStartExercise={handleStartExercise}
-            onTakeWithFriend={handleTakeWithFriend}
+            onStartExercise={handleStartExerciseWithFriendObj}
+            onTakeWithFriend={() => setActiveView('take-with-friend-session')}
+          />
+        );
+      case 'take-with-friend-session':
+        if (!selectedExercise) return null;
+        return (
+          <TakeWithFriendSessionPage
+            exercise={selectedExercise}
+            onLeave={() => {
+              setSelectedExercise(null);
+              setActiveView('take-with-friend');
+            }}
+            onStartSolo={() => {
+              setActiveView('take-exercise');
+            }}
           />
         );
       case 'history':
         return (
           <HistoryPage
-            onViewExercise={(exerciseId) => {
+            onViewExercise={(exerciseId: string) => {
               const exercise = exercises.find(e => e.id === exerciseId);
               if (exercise) {
                 setSelectedExercise(exercise);
                 setActiveView('exercise-detail');
               }
             }}
-            onRetakeExercise={(exerciseId) => {
+            onRetakeExercise={(exerciseId: string) => {
               handleStartExercise(exerciseId);
             }}
           />
@@ -286,10 +336,10 @@ const ExerciseTestPage: React.FC = () => {
       case 'tutor':
         return (
           <TutorPage
-            onInviteTutor={(tutorId) => {
+            onInviteTutor={(tutorId: string) => {
               console.log('Inviting tutor:', tutorId);
             }}
-            onMessageTutor={(tutorId) => {
+            onMessageTutor={(tutorId: string) => {
               console.log('Messaging tutor:', tutorId);
             }}
             onBroadcast={() => {
@@ -300,7 +350,7 @@ const ExerciseTestPage: React.FC = () => {
       case 'notifications':
         return (
           <NotificationsPage
-            onGoToExercise={(notificationId) => {
+            onGoToExercise={(notificationId: string) => {
               console.log('Go to exercise for notification:', notificationId);
               // TODO: Navigate to exercise based on notification
             }}

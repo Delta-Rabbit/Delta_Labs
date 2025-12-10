@@ -16,7 +16,7 @@ interface TakeWithFriendExercise extends Exercise {
 }
 
 interface TakeWithFriendPageProps {
-  onStartExercise?: (exerciseId: string) => void;
+  onStartExercise?: (exercise: Exercise) => void;
   onTakeWithFriend?: () => void;
 }
 
@@ -333,7 +333,7 @@ export const TakeWithFriendPage: React.FC<TakeWithFriendPageProps> = ({
                   {/* Actions - Bottom */}
                   <div className="flex items-center justify-end gap-4 mt-auto">
                     <DeltaButton
-                      onClick={() => onStartExercise?.(exercise.id)}
+                      onClick={() => onStartExercise?.(exercise)}
                       variant="primary"
                       size="md"
                       className="bg-[#174A5F] hover:bg-[#174A5F]/90 text-white px-6 py-2.5"
