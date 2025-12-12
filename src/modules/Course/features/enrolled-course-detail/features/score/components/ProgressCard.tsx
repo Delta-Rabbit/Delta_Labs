@@ -20,11 +20,7 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({ stats, className }) 
     <DeltaCard className={`p-5 font-primary border border-gray-200 shadow-sm ${className || ''}`}>
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-lg font-bold text-gray-900">Progress</h2>
-        <button className="text-gray-400 hover:text-gray-600">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-          </svg>
-        </button>
+
       </div>
 
       <div className="flex items-center gap-6 mb-6">
