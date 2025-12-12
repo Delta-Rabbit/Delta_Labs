@@ -18,6 +18,7 @@ interface ExerciseSidebarProps {
   position: SidebarPosition;
   onPositionChange: (position: SidebarPosition) => void;
   onBottomHeightChange?: (height: number) => void;
+  isFullScreen?: boolean;
 }
 
 export const ExerciseSidebar: React.FC<ExerciseSidebarProps> = ({
@@ -29,6 +30,7 @@ export const ExerciseSidebar: React.FC<ExerciseSidebarProps> = ({
   position,
   onPositionChange,
   onBottomHeightChange,
+  isFullScreen = false,
 }) => {
   const [bottomHeight, setBottomHeight] = useState(200); // Default height in pixels
   const [isResizing, setIsResizing] = useState(false);
@@ -76,13 +78,19 @@ export const ExerciseSidebar: React.FC<ExerciseSidebarProps> = ({
   const getPositionClasses = () => {
     switch (position) {
       case 'right':
-        return 'fixed right-0 top-[60px] h-[calc(100vh-60px)] w-80';
+        return isFullScreen 
+          ? 'fixed right-0 top-0 h-screen w-80'
+          : 'fixed right-0 top-[60px] h-[calc(100vh-60px)] w-80';
       case 'bottom':
         return `fixed bottom-0 left-0 right-0 w-full`;
       case 'transparent':
-        return 'fixed left-1/2 top-[60px] h-[calc(100vh-60px)] w-1/2 -translate-x-1/2 bg-gray-50/90 backdrop-blur-md border border-border-primary/50';
+        return isFullScreen
+          ? 'fixed left-1/2 top-0 h-screen w-1/2 -translate-x-1/2 bg-gray-50/90 backdrop-blur-md border border-border-primary/50'
+          : 'fixed left-1/2 top-[60px] h-[calc(100vh-60px)] w-1/2 -translate-x-1/2 bg-gray-50/90 backdrop-blur-md border border-border-primary/50';
       default:
-        return 'fixed right-0 top-[60px] h-[calc(100vh-60px)] w-80';
+        return isFullScreen
+          ? 'fixed right-0 top-0 h-screen w-80'
+          : 'fixed right-0 top-[60px] h-[calc(100vh-60px)] w-80';
     }
   };
 

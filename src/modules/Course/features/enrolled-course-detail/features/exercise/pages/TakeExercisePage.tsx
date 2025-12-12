@@ -58,6 +58,7 @@ interface TakeExercisePageProps {
   questions: Question[];
   onExit: () => void;
   onComplete?: (answers: Record<string, string>) => void;
+  isFullScreen?: boolean;
 }
 
 export const TakeExercisePage: React.FC<TakeExercisePageProps> = ({
@@ -65,6 +66,7 @@ export const TakeExercisePage: React.FC<TakeExercisePageProps> = ({
   questions,
   onExit,
   onComplete,
+  isFullScreen = false,
 }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -352,7 +354,9 @@ export const TakeExercisePage: React.FC<TakeExercisePageProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 top-[60px] bottom-0 left-0 right-0 w-full h-[calc(100vh-60px)] flex font-primary bg-white overflow-hidden z-[100]">
+    <div className={`fixed inset-0 left-0 right-0 w-full flex font-primary bg-white overflow-hidden z-[100] ${
+      isFullScreen ? 'top-0 bottom-0 h-screen' : 'top-[60px] bottom-0 h-[calc(100vh-60px)]'
+    }`}>
       {/* Main Content Area */}
       <div 
         className={`flex-1 flex flex-col overflow-y-auto ${getContentPadding()}`}
@@ -437,6 +441,7 @@ export const TakeExercisePage: React.FC<TakeExercisePageProps> = ({
         position={sidebarPosition}
         onPositionChange={setSidebarPosition}
         onBottomHeightChange={setBottomSidebarHeight}
+        isFullScreen={isFullScreen}
       />
     </div>
   );

@@ -800,7 +800,7 @@ const CourseCombiner: React.FC<CourseCombinerProps> = ({
     if (connectFromId) {
       if (connectFromId === 'starting-node') {
         newNode.connections = ['starting-node'];
-      } else {
+    } else {
         setRoadmapNodes((prev: RoadmapNode[]) => prev.map((node: RoadmapNode) => 
           node.id === connectFromId
             ? { ...node, connections: [...node.connections, newNode.id] }
