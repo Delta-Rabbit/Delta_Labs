@@ -8,8 +8,8 @@ import { TabNavigation } from "../components/tab-navigation"
 import { EmptyState } from "../components/empty-state"
 import { NewItemModal } from "../components/new-item-modal"
 import { CourseCard } from "../components/course-card"
-import type { Course } from "../components/course-card"
 import { CourseDetailPage } from "./Course-detail-page"
+import type { Course } from "../components/course-card"
 
 export default function RootDepartmentPage() {
   const [modalOpen, setModalOpen] = useState(false)
@@ -21,22 +21,18 @@ export default function RootDepartmentPage() {
     window.scrollTo(0, 0)
   }, [])
 
-  // Add a new course
   const handleAddCourse = (course: Course) => {
     setCourses(prev => [...prev, course])
-    setActiveTab("courses") // teleport to Courses tab
+    setActiveTab("courses")
     setModalOpen(false)
   }
 
-  // Select a course to view details
   const handleGoToCourse = (course: Course) => {
     setSelectedCourse(course)
   }
 
-  // Back handler from CourseDetailPage
   const handleBack = () => setSelectedCourse(null)
 
-  // Render CourseDetailPage if a course is selected
   if (selectedCourse) {
     return <CourseDetailPage course={selectedCourse} onBack={handleBack} />
   }
@@ -46,7 +42,6 @@ export default function RootDepartmentPage() {
       <TopNavigation />
 
       <div className="pl-12 pr-8 py-4">
-        {/* Toolbar */}
         <div className="mb-4">
           <ActionToolbar onNewClick={() => setModalOpen(true)} />
         </div>
@@ -55,10 +50,8 @@ export default function RootDepartmentPage() {
           <div className="p-4 pl-6">
             <DepartmentHeader />
 
-            {/* Tabs */}
             <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-            {/* Tab Content */}
             {activeTab === "courses" ? (
               courses.length === 0 ? (
                 <EmptyState onNewClick={() => setModalOpen(true)} />
@@ -68,7 +61,7 @@ export default function RootDepartmentPage() {
                     <CourseCard
                       key={course.id}
                       course={course}
-                      onGoToCourse={handleGoToCourse}
+                      onGoToCourse={() => handleGoToCourse(course)}
                     />
                   ))}
                 </div>
@@ -80,7 +73,6 @@ export default function RootDepartmentPage() {
         </div>
       </div>
 
-      {/* New Item Modal */}
       <NewItemModal
         open={modalOpen}
         onOpenChange={setModalOpen}
