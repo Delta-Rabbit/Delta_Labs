@@ -1,5 +1,7 @@
-import { useState, useRef, useEffect } from "react"
-import { X, Plus } from "lucide-react"
+"use client"
+
+import { useState } from "react"
+import { Plus, X } from "lucide-react"
 
 interface TabNavigationProps {
   activeTab: string
@@ -7,144 +9,139 @@ interface TabNavigationProps {
 }
 
 export function TabNavigation({ activeTab, onTabChange }: TabNavigationProps) {
-  const [editingTab, setEditingTab] = useState<string | null>(null)
-  const [hoveredTab, setHoveredTab] = useState<string | null>(null)
-
-  const [tabNames, setTabNames] = useState({
-    departments: "Departments",
-    courses: "Courses",
-    faculty: "Faculty",
-    students: "Students",
-    settings: "Settings",
-  })
-
-  const inputRef = useRef<HTMLInputElement>(null)
-
   const [tabs, setTabs] = useState([
-    { id: "departments" },
-    { id: "courses" },
-    { id: "faculty" },
-    { id: "students" },
-    { id: "settings" },
+    "All",
+    "Departments",
+    "Class",
+    "Course",
+    "Management Table",
+    "Resource",
+    "Students",
   ])
+  const [editingTab, setEditingTab] = useState<string | null>(null)
+  const [editValue, setEditValue] = useState("")
+  const [hoveredTab, setHoveredTab] = useState<string | null>(null)
+  const [deletingTab, setDeletingTab] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (editingTab && inputRef.current) {
-      inputRef.current.focus()
-      inputRef.current.select()
+  const handleDoubleClick = (tab: string) => {
+    setEditingTab(tab)
+    setEditValue(tab)
+  }
+
+  const handleRename = (oldName: string) => {
+    if (editValue.trim() && editValue !== oldName) {
+      const newTabs = tabs.map((t) => (t === oldName ? editValue.trim() : t))
+      setTabs(newTabs)
+      if (activeTab === oldName) {
+        onTabChange(editValue.trim())
+      }
     }
-  }, [editingTab])
-
-  const generateId = () => {
-    return `tab-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-  }
-
-  const handleAddTab = () => {
-    const newId = generateId()
-    const newTab = { id: newId }
-
-    setTabs(prev => [...prev, newTab])
-
-    setTabNames(prev => ({
-      ...prev,
-      [newId]: "New Tab",
-    }))
-
-    onTabChange(newId)
-    setEditingTab(newId)
-  }
-
-  const handleDoubleClick = (tabId: string) => {
-    setEditingTab(tabId)
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTabNames(prev => ({
-      ...prev,
-      [editingTab!]: e.target.value,
-    }))
-  }
-
-  const handleInputBlur = () => {
     setEditingTab(null)
   }
 
-  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === "Escape") {
-      setEditingTab(null)
+  const handleDeleteClick = (tab: string) => {
+    setDeletingTab(tab)
+  }
+
+  const confirmDelete = () => {
+    if (deletingTab) {
+      const newTabs = tabs.filter((t) => t !== deletingTab)
+      setTabs(newTabs)
+      if (activeTab === deletingTab && newTabs.length > 0) {
+        onTabChange(newTabs[0])
+      }
+      setDeletingTab(null)
     }
   }
 
-  const handleDeleteTab = (tabId: string, e: React.MouseEvent) => {
-    e.stopPropagation()
+  const cancelDelete = () => {
+    setDeletingTab(null)
+  }
 
-    if (tabs.length <= 1) return
-
-    const newTabs = tabs.filter(tab => tab.id !== tabId)
-    setTabs(newTabs)
-
-    setTabNames(prev => {
-      const names = { ...prev }
-      delete names[tabId as keyof typeof names]
-      return names
-    })
-
-    if (activeTab === tabId) {
-      onTabChange(newTabs[0].id)
-    }
+  const handleAddTab = () => {
+    const newTabName = `New Tab ${tabs.length + 1}`
+    setTabs([...tabs, newTabName])
   }
 
   return (
-    <div className="flex mb-8 items-center">
-      {tabs.map(tab => (
-        <div
-          key={tab.id}
-          className="relative group"
-          onMouseEnter={() => setHoveredTab(tab.id)}
-          onMouseLeave={() => setHoveredTab(null)}
-        >
-          {editingTab === tab.id ? (
-            <input
-              ref={inputRef}
-              type="text"
-              value={tabNames[tab.id as keyof typeof tabNames]}
-              onChange={handleInputChange}
-              onBlur={handleInputBlur}
-              onKeyDown={handleInputKeyDown}
-              className="px-6 py-3 font-medium border-b-2 border-[#174a5f] text-[#174a5f] bg-transparent outline-none min-w-[120px]"
-              style={{ caretColor: "#174a5f" }}
-            />
-          ) : (
+    <>
+      <div className="border-b border-[#d2d2d2] mb-12">
+        <div className="flex items-center">
+          {tabs.map((tab) => (
             <button
-              onClick={() => onTabChange(tab.id)}
-              onDoubleClick={() => handleDoubleClick(tab.id)}
-              className={`px-6 py-3 font-medium border-b-2 transition-colors relative flex items-center gap-2 ${
-                activeTab === tab.id
-                  ? "border-[#174a5f] text-[#174a5f]"
-                  : "border-transparent text-[#625f68] hover:text-[#151619]"
+              key={tab}
+              onClick={() => !editingTab && onTabChange(tab)}
+              onDoubleClick={() => handleDoubleClick(tab)}
+              onMouseEnter={() => setHoveredTab(tab)}
+              onMouseLeave={() => setHoveredTab(null)}
+              className={`pb-3 px-4 text-sm font-medium relative flex items-center gap-2 ${
+                activeTab === tab ? "text-[#000000]" : "text-[#939090]"
               }`}
             >
-              <span>{tabNames[tab.id as keyof typeof tabNames]}</span>
-
-              {hoveredTab === tab.id && tabs.length > 1 && (
-                <button
-                  onClick={e => handleDeleteTab(tab.id, e)}
-                  className="p-1 rounded hover:bg-gray-200 transition-colors"
-                >
-                  <X className="w-3 h-3" />
-                </button>
+              {editingTab === tab ? (
+                <input
+                  type="text"
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  onBlur={() => handleRename(tab)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleRename(tab)
+                    if (e.key === "Escape") setEditingTab(null)
+                  }}
+                  autoFocus
+                  className="bg-transparent border-b border-[#174a5f] outline-none text-sm font-medium w-32"
+                />
+              ) : (
+                <>
+                  <span>{tab}</span>
+                  {hoveredTab === tab && (
+                    <X
+                      className="h-3 w-3 text-[#939090] hover:text-[#174a5f]"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDeleteClick(tab)
+                      }}
+                    />
+                  )}
+                </>
               )}
+              {activeTab === tab && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#174a5f]" />}
             </button>
-          )}
-        </div>
-      ))}
+          ))}
 
-      <button
-        onClick={handleAddTab}
-        className="px-4 py-3 text-[#625f68] hover:text-[#174a5f] hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-1"
-      >
-        <Plus className="w-4 h-4" />
-      </button>
-    </div>
+          <button onClick={handleAddTab} className="p-2 text-[#939090] hover:text-[#174a5f] transition-colors">
+            <Plus className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+
+      {deletingTab && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50"
+          style={{ backgroundColor: "rgba(23, 74, 95, 0.25)" }}
+        >
+          <div className="bg-white rounded-lg shadow-lg p-6 w-80">
+            <h2 className="text-lg font-semibold text-[#000000] mb-4">Delete Tab?</h2>
+            <p className="text-sm text-[#666666] mb-6">
+              Are you sure you want to delete this tab? This action cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={confirmDelete}
+                className="flex-1 bg-[#FF0000] text-white py-2 px-4 rounded hover:bg-[#CC0000] transition-colors font-medium"
+              >
+                Delete
+              </button>
+              <button
+                onClick={cancelDelete}
+                className="flex-1 bg-white border border-[#d2d2d2] text-[#000000] py-2 px-4 rounded hover:bg-gray-50 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
