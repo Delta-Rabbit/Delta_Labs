@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronLeft, ChevronDown } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 
 interface AskQuestionsFormProps {
   onBack: () => void
@@ -16,6 +16,7 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
   const [visibilityOpen, setVisibilityOpen] = useState(false)
   const [paymentOpen, setPaymentOpen] = useState(false)
   const [paymentType, setPaymentType] = useState("free")
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const handlePost = () => {
     if (questionTitle.trim() && details.trim()) {
@@ -23,41 +24,13 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
     }
   }
 
+  const handleVisibilitySelect = (value: string) => {
+    setVisibility(value)
+    setIsDropdownOpen(false)
+  }
+
   return (
     <div className="flex-1 flex flex-col bg-white">
-      {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-        <div className="flex items-center gap-3">
-          <button onClick={onBack} className="text-gray-600 hover:text-gray-900">
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <div className="flex items-center gap-2">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M4 15L4 4C4 3.44772 4.44772 3 5 3H15C15.5523 3 16 3.44772 16 4V11C16 11.5523 15.5523 12 15 12H7L4 15Z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path d="M7 7H13M7 10H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-            <h1 className="text-xl font-semibold">Ask Questions</h1>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button className="text-[#174a5f] hover:text-[#2c6076]">Integrate</button>
-          <button className="text-[#174a5f] hover:text-[#2c6076]">Automate</button>
-          <button className="border border-gray-300 px-4 py-2 rounded hover:bg-gray-50">Invite</button>
-          <button className="text-[#174a5f] hover:text-[#2c6076]">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M10 5v10M5 10h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
       <div className="flex-1 flex overflow-hidden">
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto px-6 py-6">
@@ -76,14 +49,12 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
             />
           </div>
 
-          {/* Details */}
           <div className="mb-6">
             <h2 className="text-base font-semibold mb-1">What are the details of your problem?</h2>
             <p className="text-sm text-gray-600 mb-3">
               Introduce the problem and expand on what you put in the title. Minimum 20 characters.
             </p>
 
-            {/* Rich Text Editor Toolbar */}
             <div className="border border-gray-300 rounded-t bg-white px-3 py-2 flex items-center gap-2 flex-wrap">
               <button className="p-1 hover:bg-gray-100 rounded">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -122,7 +93,7 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
                   <circle cx="4" cy="6" r="1.5" fill="currentColor" />
                   <circle cx="4" cy="10" r="1.5" fill="currentColor" />
                   <circle cx="4" cy="14" r="1.5" fill="currentColor" />
-                  <path d="M8 6h8M8 10h8M8 14h8" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M8 6h8M8 12h8" stroke="currentColor" strokeWidth="1.5" />
                 </svg>
               </button>
               <button className="p-1 hover:bg-gray-100 rounded">
@@ -161,7 +132,6 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
             />
           </div>
 
-          {/* Tags */}
           <div className="mb-6">
             <h2 className="text-base font-semibold mb-1">Tags</h2>
             <p className="text-sm text-gray-600 mb-3">
@@ -177,9 +147,7 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
           </div>
         </div>
 
-        {/* Right Sidebar */}
         <div className="w-80 border-l border-gray-200 bg-white px-6 py-6">
-          {/* Action Buttons */}
           <div className="flex gap-3 mb-6">
             <button className="flex-1 border border-gray-300 px-4 py-2 rounded text-sm hover:bg-gray-50">
               Save as Draft
@@ -192,11 +160,9 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
             </button>
           </div>
 
-          {/* Question Features */}
           <div className="mb-6">
             <h3 className="text-sm font-medium text-[#174a5f] mb-4 pb-2 border-b border-gray-200">Question Features</h3>
 
-            {/* Visibility */}
             <div className="mb-4">
               <button
                 onClick={() => setVisibilityOpen(!visibilityOpen)}
@@ -210,22 +176,43 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
                 <div className="mt-2 space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Visibility</span>
-                    <select
-                      value={visibility}
-                      onChange={(e) => setVisibility(e.target.value)}
-                      className="border border-gray-300 rounded px-2 py-1 text-sm outline-none focus:border-[#174a5f]"
-                    >
-                      <option>Public</option>
-                      <option>Private</option>
-                      <option>Team</option>
-                    </select>
+                    <div className="relative">
+                      <button
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        className="border border-gray-300 rounded px-2 py-1 text-sm outline-none focus:border-[#174a5f] bg-white min-w-[100px] text-left flex items-center justify-between"
+                      >
+                        <span>{visibility}</span>
+                        <ChevronDown className="w-3 h-3 ml-2" />
+                      </button>
+                      {isDropdownOpen && (
+                        <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded shadow-lg z-10">
+                          <button
+                            onClick={() => handleVisibilitySelect("Public")}
+                            className="w-full px-2 py-1.5 text-sm text-left hover:bg-[#174a5f] hover:text-white transition-colors"
+                          >
+                            Public
+                          </button>
+                          <button
+                            onClick={() => handleVisibilitySelect("Private")}
+                            className="w-full px-2 py-1.5 text-sm text-left hover:bg-[#174a5f] hover:text-white transition-colors"
+                          >
+                            Private
+                          </button>
+                          <button
+                            onClick={() => handleVisibilitySelect("Team")}
+                            className="w-full px-2 py-1.5 text-sm text-left hover:bg-[#174a5f] hover:text-white transition-colors"
+                          >
+                            Team
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <button className="text-red-500 text-sm hover:text-red-600">Move to Trash</button>
                 </div>
               )}
             </div>
 
-            {/* Payment */}
             <div>
               <button
                 onClick={() => setPaymentOpen(!paymentOpen)}
