@@ -46,8 +46,7 @@ export function QAContent() {
 
   return (
     <div className="flex-1 flex flex-col">
-      {/* Tabs */}
-      <div className="border-b border-gray-200">
+      <div>
         <div className="flex items-center justify-between px-6">
           <div className="flex items-center gap-8">
             <button
@@ -78,29 +77,9 @@ export function QAContent() {
               {activeTab === "draft" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#174a5f]" />}
             </button>
           </div>
-
-          {(activeTab === "community" || activeTab === "questions") && (
-            <button
-              onClick={() => setShowAskForm(true)}
-              className="flex items-center gap-2 bg-[#174a5f] text-white px-4 py-2 rounded-lg hover:bg-[#2c6076] transition-colors my-2"
-            >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M4 15L4 4C4 3.44772 4.44772 3 5 3H15C15.5523 3 16 3.44772 16 4V11C16 11.5523 15.5523 12 15 12H7L4 15Z"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path d="M7 7H13M7 10H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-              Ask Questions
-            </button>
-          )}
         </div>
       </div>
 
-      {/* Search Bar */}
       <div className="flex justify-center items-center px-6 py-6">
         <div className="flex items-center gap-2 w-full max-w-md border border-gray-300 rounded-lg px-4 py-2 bg-white">
           <input
@@ -146,7 +125,6 @@ export function QAContent() {
                     </button>
                   </div>
 
-                  {/* Question Content */}
                   <div className="flex-1">
                     <h3 className="text-[#174a5f] font-medium mb-2">{question.title}</h3>
                     <p className="text-gray-600 text-sm mb-3">{question.preview}</p>
@@ -170,7 +148,6 @@ export function QAContent() {
                     </div>
                   </div>
 
-                  {/* Right Stats */}
                   <div className="flex items-center gap-4">
                     <div className="flex flex-col items-center">
                       <button className="text-gray-400 hover:text-[#174a5f]">
@@ -217,7 +194,6 @@ export function QAContent() {
             ))}
           </div>
 
-          {/* Pagination */}
           <div className="flex items-center justify-center gap-2 mt-8">
             <button className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">« First</button>
             <button className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">‹ Back</button>
