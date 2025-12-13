@@ -5,7 +5,6 @@ interface CourseHeaderProps {
   onBack?: () => void
 }
 
-// Back Arrow Icon
 const BackArrowIcon = () => (
   <svg width="28" height="30" viewBox="0 0 28 30" fill="none">
     <path
@@ -17,7 +16,6 @@ const BackArrowIcon = () => (
   </svg>
 )
 
-// Book Icon
 const BookIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path
@@ -27,7 +25,6 @@ const BookIcon = () => (
   </svg>
 )
 
-// Integrate Icon (wrench tool)
 const IntegrateIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path
@@ -43,7 +40,6 @@ const IntegrateIcon = () => (
   </svg>
 )
 
-// Robot/Automate Icon
 const AutomateIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path
@@ -84,7 +80,6 @@ const AutomateIcon = () => (
   </svg>
 )
 
-// Share/Invite Icon
 const InviteIcon = () => (
   <svg width="17" height="18" viewBox="0 0 17 18" fill="none">
     <path
@@ -118,7 +113,6 @@ const InviteIcon = () => (
   </svg>
 )
 
-// Link Icon
 const LinkIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
     <path
@@ -142,7 +136,6 @@ const LinkIcon = () => (
   </svg>
 )
 
-// Play Button Icon
 const PlayIcon = () => (
   <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
     <path
@@ -155,58 +148,47 @@ const PlayIcon = () => (
 
 export function CourseHeader({ title, onBack }: CourseHeaderProps) {
   return (
-    <div className="flex items-center w-full h-[40px] px-4 bg-white border-b border-gray-100">
-      {/* Left section: Back arrow + Book icon + Title */}
+    <div className="flex items-center w-full h-[40px] px-4 bg-white">
+      {/* Left section */}
       <div className="flex items-center gap-3">
-        {/* Back arrow icon */}
-        <button onClick={onBack} className="flex items-center cursor-pointer hover:opacity-70 transition-opacity">
+        <button onClick={onBack} className="flex items-center">
           <BackArrowIcon />
         </button>
 
-        {/* Book icon */}
-        <div className="flex items-center">
-          <BookIcon />
-        </div>
+        <BookIcon />
 
-        {/* Title */}
         <span className="text-base font-medium text-gray-900">{title}</span>
       </div>
 
-      {/* Spacer */}
       <div className="flex-1" />
 
-      {/* Right section: Action buttons */}
       <div className="flex items-center gap-5">
-        {/* Integrate with icon */}
-        <button className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity">
+        <button className="flex items-center gap-2">
           <IntegrateIcon />
           <span className="text-sm text-gray-700">Integrate</span>
         </button>
 
-        {/* Automate with icon */}
-        <button className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity">
+        <button className="flex items-center gap-2">
           <AutomateIcon />
           <span className="text-sm text-gray-700">Automate</span>
         </button>
 
-        {/* Invite button with border */}
         <div className="flex items-center border border-[#174A5F]/40 rounded-[3px]">
-          <button className="flex items-center gap-2 px-3 py-1 cursor-pointer hover:bg-gray-50 transition-colors">
+          <button className="flex items-center gap-2 px-3 py-1">
             <InviteIcon />
             <span className="text-sm text-[#174A5F]">Invite</span>
           </button>
-          {/* Separator */}
+
           <div className="h-[20px] w-px bg-[#174A5F]" />
-          {/* Link icon */}
-          <button className="flex items-center px-2 py-1 cursor-pointer hover:bg-gray-50 transition-colors">
+
+          <button className="flex items-center px-2 py-1">
             <LinkIcon />
           </button>
         </div>
 
-        {/* Run with play button */}
         <div className="flex items-center gap-2">
           <span className="text-sm text-[#174A5F]">Run</span>
-          <button className="flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
+          <button className="flex items-center justify-center">
             <PlayIcon />
           </button>
         </div>
