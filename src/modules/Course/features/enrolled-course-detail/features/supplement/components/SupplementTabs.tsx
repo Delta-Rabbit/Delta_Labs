@@ -17,7 +17,7 @@ export const SupplementTabs: React.FC<SupplementTabsProps> = ({ activeTab, onTab
   ];
 
   return (
-    <div className="flex items-center gap-2 border-b border-gray-100 font-primary">
+    <div className="flex items-center gap-2 font-primary">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
         return (

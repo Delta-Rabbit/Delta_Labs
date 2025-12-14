@@ -244,7 +244,7 @@ const SupplementPage: React.FC = () => {
                      'History'}
                 </h1>
 
-                <div className="flex items-center justify-between mb-8 border-b border-gray-100">
+                <div className="flex items-end justify-between mb-8 border-b border-gray-100">
                     <div className="-mb-px">
                       <SupplementTabs activeTab={activeTab} onTabChange={setActiveTab} />
                     </div>
