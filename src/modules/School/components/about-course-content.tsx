@@ -25,7 +25,8 @@ export function AboutCourseContent() {
 
   return (
     <div className="flex flex-col">
-      <div className="w-[95%] mx-auto mb-6">
+        <div className="w-[90%] mx-auto mb-6">
+
         <div
           className={`relative px-6 py-6 rounded-lg overflow-hidden h-[180px] flex items-center justify-center cursor-pointer ${
             coverImage ? "bg-cover bg-center" : "bg-[#F8F8F8]"
@@ -70,6 +71,7 @@ export function AboutCourseContent() {
 
       <div className="max-w-3xl mx-auto w-full">
         <div className="bg-white px-6 py-6 flex flex-col gap-4">
+          {/* Course Name Input Card */}
           <div className="bg-white rounded-lg border border-[#D9D9D9] p-4">
             <input
               type="text"
@@ -99,6 +101,7 @@ export function AboutCourseContent() {
             </div>
           </div>
 
+          {/* Welcome Message Card */}
           <div className="bg-white rounded-lg border border-[#D9D9D9] p-4">
             <textarea
               placeholder="Write your welcome message here..."
@@ -108,6 +111,7 @@ export function AboutCourseContent() {
             />
           </div>
 
+          {/* Course Details Card - Taller */}
           <div className="bg-white rounded-lg border border-[#D9D9D9] p-4">
             <textarea
               placeholder="Write details about the course here..."

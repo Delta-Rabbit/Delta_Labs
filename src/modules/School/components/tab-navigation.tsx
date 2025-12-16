@@ -65,7 +65,7 @@ export function TabNavigation({ activeTab, onTabChange }: TabNavigationProps) {
 
   return (
     <>
-      <div className="border-b border-[#d2d2d2] mb-12">
+      <div className="mb-12">
         <div className="flex items-center">
           {tabs.map((tab) => (
             <button

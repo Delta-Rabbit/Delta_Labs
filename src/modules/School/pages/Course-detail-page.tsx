@@ -107,10 +107,8 @@ export function CourseDetailPage({ course, onBack }: CourseDetailPageProps) {
     switch (tabId) {
       case "about":
         return (
-          <div className="flex justify-center overflow-y-auto max-h-[calc(100vh-200px)] pb-20">
-            <div className="w-full max-w-4xl px-6">
-              <AboutCourseContent />
-            </div>
+          <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-200px)] pb-20">
+            <AboutCourseContent />
           </div>
         )
       case "related":

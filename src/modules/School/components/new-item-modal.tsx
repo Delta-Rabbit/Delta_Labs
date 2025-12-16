@@ -11,6 +11,7 @@ interface NewItemModalProps {
   onAddCourse?: (course: Course) => void
 }
 
+// Custom Radio Button Component
 function RadioButton({
   checked,
   onChange,
@@ -36,11 +37,7 @@ function RadioButton({
       >
         {checked && <div className="h-3 w-3 rounded-full bg-[#174a5f]" />}
       </button>
-      <label
-        htmlFor={id}
-        onClick={onChange}
-        className="text-lg font-normal text-[#5c5f62] cursor-pointer select-none"
-      >
+      <label htmlFor={id} onClick={onChange} className="text-lg font-normal text-[#5c5f62] cursor-pointer select-none">
         {label}
       </label>
     </div>
@@ -51,28 +48,39 @@ export function NewItemModal({ open, onOpenChange, onAddCourse }: NewItemModalPr
   const [selectedType, setSelectedType] = React.useState<string>("")
   const [showCourseModal, setShowCourseModal] = React.useState(false)
 
+  // Handle escape key
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && open) onOpenChange(false)
+      if (e.key === "Escape" && open) {
+        onOpenChange(false)
+      }
     }
     document.addEventListener("keydown", handleEscape)
     return () => document.removeEventListener("keydown", handleEscape)
   }, [open, onOpenChange])
 
+  // Prevent body scroll when modal is open
   React.useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : ""
+    if (open) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
     return () => {
       document.body.style.overflow = ""
     }
   }, [open])
 
   const handleNext = () => {
-    if (selectedType === "course") setShowCourseModal(true)
+    if (selectedType === "course") {
+      setShowCourseModal(true)
+    }
   }
 
   const handleCourseModalClose = (isOpen: boolean) => {
     setShowCourseModal(isOpen)
     if (!isOpen) {
+      // Reset and close both modals
       setSelectedType("")
       onOpenChange(false)
     }
@@ -86,8 +94,12 @@ export function NewItemModal({ open, onOpenChange, onAddCourse }: NewItemModalPr
   }
 
   if (!open) return null
-  if (showCourseModal)
-    return <CreateCourseModal open={showCourseModal} onOpenChange={handleCourseModalClose} onAddCourse={handleCourseAdded} />
+
+  if (showCourseModal) {
+    return (
+      <CreateCourseModal open={showCourseModal} onOpenChange={handleCourseModalClose} onAddCourse={handleCourseAdded} />
+    )
+  }
 
   const leftColumnOptions = [
     { id: "folder", label: "Folder" },
@@ -106,10 +118,10 @@ export function NewItemModal({ open, onOpenChange, onAddCourse }: NewItemModalPr
 
   return (
     <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/50 z-50" onClick={() => onOpenChange(false)} />
+      {/* Backdrop Overlay */}
+      <div className="fixed inset-0 bg-black/50 z-50" onClick={() => onOpenChange(false)} aria-hidden="true" />
 
-      {/* Modal */}
+      {/* Modal Dialog */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
           role="dialog"
@@ -121,14 +133,14 @@ export function NewItemModal({ open, onOpenChange, onAddCourse }: NewItemModalPr
           {/* Header */}
           <div className="p-6 pb-4 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              {/* Folder icon with transparent blue background */}
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#174a5f80] border-2 border-[#174a5f] shrink-0">
-                <Folder className="h-6 w-6 text-white" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white border-2 border-[#174a5f] shrink-0">
+                <Folder className="h-6 w-6 text-[#174a5f]" />
               </div>
               <h2 id="modal-title" className="text-xl font-bold text-[#174a5f]">
                 New
               </h2>
             </div>
+            {/* Close Button */}
             <button
               type="button"
               onClick={() => onOpenChange(false)}
@@ -139,9 +151,10 @@ export function NewItemModal({ open, onOpenChange, onAddCourse }: NewItemModalPr
             </button>
           </div>
 
-          {/* Options */}
+          {/* Radio Options Content */}
           <div className="px-6 pb-8">
             <div className="grid grid-cols-2 gap-x-8 gap-y-6" role="radiogroup">
+              {/* Left Column */}
               <div className="flex flex-col space-y-6">
                 {leftColumnOptions.map((option) => (
                   <RadioButton
@@ -153,6 +166,8 @@ export function NewItemModal({ open, onOpenChange, onAddCourse }: NewItemModalPr
                   />
                 ))}
               </div>
+
+              {/* Right Column */}
               <div className="flex flex-col space-y-6">
                 {rightColumnOptions.map((option) => (
                   <RadioButton
@@ -167,7 +182,7 @@ export function NewItemModal({ open, onOpenChange, onAddCourse }: NewItemModalPr
             </div>
           </div>
 
-          {/* Footer */}
+          {/* Footer Buttons */}
           <div className="p-6 pt-0 flex gap-4">
             <button
               type="button"

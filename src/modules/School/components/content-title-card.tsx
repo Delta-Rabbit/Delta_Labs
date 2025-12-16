@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+
 import { useState } from "react"
 
 interface Comment {
@@ -63,17 +64,10 @@ export function ContentTitleCard() {
   }
 
   return (
-    <div
-      className="flex flex-col gap-4 max-h-[calc(100vh-200px)] pr-2 overflow-y-scroll pb-40"
-      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-    >
-      <style jsx>{`
-        div::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
-
+    <div className="flex flex-col gap-4 scrollbar-hide">
+      {/* Tag and Keyframe Card */}
       <div className="w-[440px] p-6 rounded-lg border border-dashed border-[#D9D9D9] bg-white">
+        {/* Tag Input */}
         <div className="mb-4">
           <input
             type="text"
@@ -94,6 +88,7 @@ export function ContentTitleCard() {
         </div>
       </div>
 
+      {/* Description Textarea */}
       <div className="w-[440px] p-4 rounded-lg border border-[#D9D9D9] bg-white">
         <textarea
           placeholder="Write your description here..."
@@ -102,21 +97,25 @@ export function ContentTitleCard() {
       </div>
 
       <div className="w-[440px]">
+        {/* Comments Header */}
         <div className="flex items-center gap-2 mb-4">
           <span className="text-lg font-semibold text-[#174A5F]">Comments</span>
           <span className="text-lg text-[#174A5F]">{comments.length}</span>
         </div>
 
+        {/* Comment Items */}
         {comments.map((comment) => (
           <div key={comment.id} className={`flex items-start gap-3 mb-4 ${comment.isReply ? "pl-8" : ""}`}>
+            {/* Avatar */}
             <div className="w-[35px] h-[35px] rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
               <img
-                src="/assets/images/profile.png"
+                src="/placeholder.svg?height=35&width=35"
                 alt={comment.author}
                 className="w-full h-full object-cover"
               />
             </div>
 
+            {/* Comment Content */}
             <div className="flex-1">
               <span className="text-sm font-medium text-black">{comment.author}</span>
               <p className="text-sm text-black mt-1">{comment.text}</p>

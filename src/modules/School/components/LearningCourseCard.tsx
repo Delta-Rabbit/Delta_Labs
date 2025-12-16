@@ -15,7 +15,7 @@ export function LearningCourseCard({
   courseTitle = "Learning JavaScript With Imagination",
   institution = "AAU",
   rating = "4.8 Reviews",
-  imageUrl = "/laptop-workspace-with-plant.jpg",
+  imageUrl = "/laptopworkspace.jpg",
 }: LearningCourseCardProps) {
   return (
     <div className="flex items-start gap-2">
@@ -33,16 +33,17 @@ export function LearningCourseCard({
       </button>
 
       <div className="w-[220px] rounded-2xl border-2 border-gray-300 bg-white p-3 shadow-sm">
-        <div className="relative mb-3">
+        {/* Course image with overlay icons */}
+        <div className="relative mb-4">
           <img
-            src={imageUrl || "/placeholder.svg"}
+            src={imageUrl || "/play-button.png"}
             alt="Course preview"
-            className="w-full h-[110px] object-cover rounded-xl"
+            className="w-full h-[130px] object-cover rounded-xl"
           />
 
           <div className="absolute inset-0 flex items-center justify-center">
             <img
-              src="./play-button.png"
+              src="/play-button.png"
               alt="Play"
               className="w-12 h-12 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
             />
@@ -78,6 +79,7 @@ export function LearningCourseCard({
               </svg>
             </div>
 
+            {/* Document icon */}
             <div className="w-8 h-8 rounded-full bg-white shadow-lg flex items-center justify-center">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -97,6 +99,7 @@ export function LearningCourseCard({
               </svg>
             </div>
 
+            {/* Download icon */}
             <div className="w-8 h-8 rounded-full bg-white shadow-lg flex items-center justify-center">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path

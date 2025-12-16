@@ -2,37 +2,22 @@
 
 import { useState } from "react"
 
-// Wifi/Signal Icon for Enrollment
+// Enrollment Icon (White)
 function EnrollmentIcon() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M12 18C12.5523 18 13 17.5523 13 17C13 16.4477 12.5523 16 12 16C11.4477 16 11 16.4477 11 17C11 17.5523 11.4477 18 12 18Z"
-        fill="white"
-      />
-      <path
-        d="M8.46 14.54C9.40 13.59 10.65 13 12 13C13.35 13 14.6 13.59 15.54 14.54"
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M5.29 11.37C7.08 9.58 9.44 8.5 12 8.5C14.56 8.5 16.92 9.58 18.71 11.37"
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M2.1 8.18C4.72 5.56 8.19 4 12 4C15.81 4 19.28 5.56 21.9 8.18"
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
+    <svg
+      height="24"
+      width="24"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="white"
+    >
+      <path d="m4.929 2.929l1.414 1.414A7.975 7.975 0 0 0 4 10c0 2.209.895 4.209 2.343 5.657L4.93 17.07A9.969 9.969 0 0 1 2 10a9.969 9.969 0 0 1 2.929-7.071Zm14.142 0A9.969 9.969 0 0 1 22 9.999a9.969 9.969 0 0 1-2.929 7.072l-1.414-1.414A7.975 7.975 0 0 0 20 10c0-2.21-.895-4.21-2.343-5.657l1.414-1.414ZM7.757 5.757l1.415 1.414A3.987 3.987 0 0 0 8 10c0 1.104.448 2.104 1.172 2.828l-1.415 1.414A5.981 5.981 0 0 1 6 10c0-1.657.672-3.157 1.757-4.243Zm8.486 0A5.981 5.981 0 0 1 18 10a5.981 5.981 0 0 1-1.757 4.242l-1.415-1.414A3.987 3.987 0 0 0 16 10a3.987 3.987 0 0 0-1.172-2.829l1.415-1.414ZM12 12a2 2 0 1 1 0-4a2 2 0 0 1 0 4Zm0 2c.58 0 1.077.413 1.184.983L14.5 22h-5l1.316-7.017c.107-.57.604-.983 1.184-.983Z" />
     </svg>
   )
 }
 
-// Checkmark Icon for Completion
+// Completion Icon
 function CompletionIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -42,7 +27,7 @@ function CompletionIcon() {
   )
 }
 
-// Gear/Settings Icon for Reviews
+// Reviews Icon
 function ReviewsIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -120,10 +105,10 @@ export function CourseAnalysisContent() {
   const [completionPeriod, setCompletionPeriod] = useState("Year")
 
   const barData: BarData[] = [
-    { name: "Dink", score: 5, color: "#EF4444" },
-    { name: "Leul", score: 50, color: "#F59E0B" },
-    { name: "Haile", score: 90, color: "#FABC1E" },
-    { name: "Meron", score: 70, color: "#FDE68A" },
+    { name: "Dink", score: 5, color: "#EF4444" },   // Red
+    { name: "Leul", score: 50, color: "#F59E0B" },  // Orange
+    { name: "Haile", score: 90, color: "#164a5f" }, // Dark Blue
+    { name: "Meron", score: 70, color: "#dce5e8" }  // Light Grayish Blue
   ]
 
   const maxScore = 100

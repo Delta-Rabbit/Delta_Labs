@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { ChevronDown } from "lucide-react"
 
 interface AskQuestionsFormProps {
@@ -18,6 +18,8 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
   const [paymentType, setPaymentType] = useState("free")
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
+  const editorRef = useRef<HTMLDivElement>(null)
+
   const handlePost = () => {
     if (questionTitle.trim() && details.trim()) {
       onPost({ title: questionTitle, details, tags })
@@ -27,6 +29,23 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
   const handleVisibilitySelect = (value: string) => {
     setVisibility(value)
     setIsDropdownOpen(false)
+  }
+
+  const format = (command: string) => {
+    editorRef.current?.focus()
+    document.execCommand(command)
+    setDetails(editorRef.current?.innerHTML || "")
+  }
+
+  const insertImage = () => {
+    const url = prompt("Enter image URL")
+    if (url) formatImage(url)
+  }
+
+  const formatImage = (url: string) => {
+    editorRef.current?.focus()
+    document.execCommand("insertImage", false, url)
+    setDetails(editorRef.current?.innerHTML || "")
   }
 
   return (
@@ -55,6 +74,7 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
               Introduce the problem and expand on what you put in the title. Minimum 20 characters.
             </p>
 
+            {/* Toolbar */}
             <div className="border border-gray-300 rounded-t bg-white px-3 py-2 flex items-center gap-2 flex-wrap">
               <button className="p-1 hover:bg-gray-100 rounded">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -81,14 +101,14 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
 
               <div className="w-px h-5 bg-gray-300" />
 
-              <button className="p-1 hover:bg-gray-100 rounded font-bold text-sm">B</button>
-              <button className="p-1 hover:bg-gray-100 rounded italic text-sm">I</button>
-              <button className="p-1 hover:bg-gray-100 rounded underline text-sm">U</button>
-              <button className="p-1 hover:bg-gray-100 rounded line-through text-sm">S</button>
+              <button onClick={() => format("bold")} className="p-1 hover:bg-gray-100 rounded font-bold text-sm">B</button>
+              <button onClick={() => format("italic")} className="p-1 hover:bg-gray-100 rounded italic text-sm">I</button>
+              <button onClick={() => format("underline")} className="p-1 hover:bg-gray-100 rounded underline text-sm">U</button>
+              <button onClick={() => format("strikeThrough")} className="p-1 hover:bg-gray-100 rounded line-through text-sm">S</button>
 
               <div className="w-px h-5 bg-gray-300" />
 
-              <button className="p-1 hover:bg-gray-100 rounded">
+              <button onClick={() => format("insertUnorderedList")} className="p-1 hover:bg-gray-100 rounded">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <circle cx="4" cy="6" r="1.5" fill="currentColor" />
                   <circle cx="4" cy="10" r="1.5" fill="currentColor" />
@@ -96,7 +116,7 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
                   <path d="M8 6h8M8 12h8" stroke="currentColor" strokeWidth="1.5" />
                 </svg>
               </button>
-              <button className="p-1 hover:bg-gray-100 rounded">
+              <button onClick={() => format("insertOrderedList")} className="p-1 hover:bg-gray-100 rounded">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <text x="3" y="8" fontSize="8" fill="currentColor">
                     1.
@@ -110,12 +130,7 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
 
               <div className="w-px h-5 bg-gray-300" />
 
-              <button className="p-1 hover:bg-gray-100 rounded">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M4 10h12M10 4l6 6-6 6" stroke="currentColor" strokeWidth="1.5" />
-                </svg>
-              </button>
-              <button className="p-1 hover:bg-gray-100 rounded">
+              <button onClick={insertImage} className="p-1 hover:bg-gray-100 rounded">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <rect x="4" y="4" width="12" height="9" stroke="currentColor" strokeWidth="1.5" />
                   <circle cx="8" cy="8" r="1.5" fill="currentColor" />
@@ -124,11 +139,13 @@ export function AskQuestionsForm({ onBack, onPost }: AskQuestionsFormProps) {
               </button>
             </div>
 
-            <textarea
-              placeholder="Detail Explanation"
-              value={details}
-              onChange={(e) => setDetails(e.target.value)}
+            {/* ContentEditable replaces textarea */}
+            <div
+              ref={editorRef}
+              contentEditable
+              onInput={() => setDetails(editorRef.current?.innerHTML || "")}
               className="w-full border border-t-0 border-gray-300 rounded-b px-4 py-3 text-sm outline-none focus:border-[#174a5f] min-h-[200px]"
+              data-placeholder="Detail Explanation"
             />
           </div>
 
