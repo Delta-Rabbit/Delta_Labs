@@ -21,8 +21,7 @@ export function AboutCourseContent() {
       const url = URL.createObjectURL(file)
       setCoverImage(url)
     }
-  }
-
+  } 
   return (
     <div className="flex flex-col">
         <div className="w-[90%] mx-auto mb-6">
