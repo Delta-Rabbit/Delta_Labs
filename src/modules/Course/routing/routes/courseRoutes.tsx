@@ -41,6 +41,7 @@ export const courseRoutes: CourseRoute[] = [
       title: 'Enrolled Courses',
     },
   },
+
   {
     path: '/enrolled/:courseId',
     component: EnrolledCourseDetailLayout,
