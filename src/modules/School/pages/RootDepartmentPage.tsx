@@ -111,7 +111,7 @@ export default function DepartmentManagement() {
       <NewItemModal
         open={isNewItemOpen}
         onOpenChange={setIsNewItemOpen}
-        onAddCourse={handleAddCourse} // ← FIX: pass the callback here
+        onAddCourse={handleAddCourse}
       />
     </div>
   )
