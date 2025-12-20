@@ -28,7 +28,7 @@ const ShareIcon = (props: React.SVGProps<SVGSVGElement>) => (
 )
 
 export function QAContent() {
-  const [activeTab, setActiveTab] = useState("questions") // Page opens on Questions tab
+  const [activeTab, setActiveTab] = useState("questions")
   const [showAskForm, setShowAskForm] = useState(false)
   const [questions, setQuestions] = useState<Question[]>([])
 
@@ -49,7 +49,7 @@ export function QAContent() {
     }
     setQuestions([newQuestion, ...questions])
     setShowAskForm(false)
-    setActiveTab("questions") // Keep focus on Questions tab
+    setActiveTab("questions")
   }
 
   if (showAskForm) {
@@ -57,7 +57,7 @@ export function QAContent() {
   }
 
   return (
-    <div className="flex-1 flex flex-col relative bg-white">
+    <div className="flex-1 flex flex-col relative bg-white min-h-screen overflow-y-scroll pb-96">
       {/* Tabs */}
       <div>
         <div className="flex items-center justify-between px-6">
@@ -159,7 +159,6 @@ export function QAContent() {
           </div>
         </>
       ) : (
-        // Empty State with Image and compact spacing
         <div className="flex-1 flex flex-col items-center justify-center gap-2 px-6 pb-20 bg-white">
           <div className="relative w-48 h-48">
             <img
