@@ -27,7 +27,8 @@ const ShareIcon = (props: React.SVGProps<SVGSVGElement>) => (
 )
 
 export function QAContent() {
-  const [activeTab, setActiveTab] = useState("questions")
+  const [activeTab, setActiveTab] = useState<"questions" | "community" | "draft">("questions")
+  const [viewMode, setViewMode] = useState<"direct" | "management">("direct")
   const [showAskForm, setShowAskForm] = useState(false)
   const [questions, setQuestions] = useState<Question[]>([])
 
@@ -63,42 +64,38 @@ export function QAContent() {
 
   return (
     <div className="flex-1 flex flex-col bg-white min-h-screen">
-      <div>
-        <div className="flex items-center justify-between px-6">
-          <div className="flex items-center gap-8">
-            <button
-              onClick={() => setActiveTab("questions")}
-              className={`py-3 text-sm transition-colors relative ${
-                activeTab === "questions" ? "text-[#174a5f] font-medium" : "text-gray-400 hover:text-gray-600"
-              }`}
-            >
-              Questions
-              {activeTab === "questions" && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#174a5f]" />
-              )}
-            </button>
-            <button
-              onClick={() => setActiveTab("community")}
-              className={`py-3 text-sm transition-colors relative ${
-                activeTab === "community" ? "text-[#174a5f] font-medium" : "text-gray-400 hover:text-gray-600"
-              }`}
-            >
-              Community
-              {activeTab === "community" && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#174a5f]" />
-              )}
-            </button>
-            <button
-              onClick={() => setActiveTab("draft")}
-              className={`py-3 text-sm transition-colors relative ${
-                activeTab === "draft" ? "text-[#174a5f] font-medium" : "text-gray-400 hover:text-gray-600"
-              }`}
-            >
-              Draft
-              {activeTab === "draft" && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#174a5f]" />
-              )}
-            </button>
+      {/* Top section: segmented control + tabs + CTA */}
+      <div className="px-6 pt-4">
+        {/* Segmented control: Direct View / Management Table */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <div className="inline-flex items-center gap-3 text-sm text-gray-600">
+              <button
+                type="button"
+                onClick={() => setViewMode("direct")}
+                className={`px-4 py-1.5 rounded-md transition-colors ${
+                  viewMode === "direct"
+                    ? "bg-[#E5EAEF] text-[#174a5f]"
+                    : "bg-transparent text-gray-600 hover:text-gray-800"
+                }`}
+              >
+                Direct View
+              </button>
+
+              <span className="text-gray-300 select-none">|</span>
+
+              <button
+                type="button"
+                onClick={() => setViewMode("management")}
+                className={`px-4 py-1.5 rounded-md transition-colors ${
+                  viewMode === "management"
+                    ? "bg-[#E5EAEF] text-[#174a5f]"
+                    : "bg-transparent text-gray-600 hover:text-gray-800"
+                }`}
+              >
+                Management Table
+              </button>
+            </div>
           </div>
 
           {questions.length > 0 && (
@@ -124,8 +121,50 @@ export function QAContent() {
             </button>
           )}
         </div>
+
+        {/* Secondary navigation: Questions / Community / Draft */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-8">
+            <button
+              onClick={() => setActiveTab("questions")}
+              className={`py-3 text-sm transition-colors relative ${
+                activeTab === "questions" ? "text-[#174a5f] font-medium" : "text-gray-400 hover:text-gray-600"
+              }`}
+            >
+              Questions
+              {activeTab === "questions" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#174a5f]" />
+              )}
+            </button>
+
+            <button
+              onClick={() => setActiveTab("community")}
+              className={`py-3 text-sm transition-colors relative ${
+                activeTab === "community" ? "text-[#174a5f] font-medium" : "text-gray-400 hover:text-gray-600"
+              }`}
+            >
+              Community
+              {activeTab === "community" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#174a5f]" />
+              )}
+            </button>
+
+            <button
+              onClick={() => setActiveTab("draft")}
+              className={`py-3 text-sm transition-colors relative ${
+                activeTab === "draft" ? "text-[#174a5f] font-medium" : "text-gray-400 hover:text-gray-600"
+              }`}
+            >
+              Draft
+              {activeTab === "draft" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#174a5f]" />
+              )}
+            </button>
+          </div>
+        </div>
       </div>
 
+      {/* Search bar */}
       <div className="flex justify-center items-center px-6 py-6">
         <div className="flex items-center gap-2 w-full max-w-lg border border-gray-300 rounded-full px-4 py-2 bg-white shadow-sm">
           <svg
@@ -152,16 +191,49 @@ export function QAContent() {
         </div>
       </div>
 
+      {/* Content area: cards vs management table */}
       <div className="flex-1 overflow-y-auto px-6 py-4">
         {showList ? (
-          <div className="space-y-4">
-            {questions.map((question) => (
-              <QuestionCard key={question.id} question={question} />
-            ))}
-          </div>
+          viewMode === "direct" ? (
+            // Direct View: original cards
+            <div className="space-y-4">
+              {questions.map((question) => (
+                <QuestionCard key={question.id} question={question} />
+              ))}
+            </div>
+          ) : (
+            // Management Table view
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead className="border-b border-gray-200 text-gray-600">
+                  <tr>
+                    <th className="text-left py-2 pr-4 font-medium">Title</th>
+                    <th className="text-left py-2 pr-4 font-medium">Author</th>
+                    <th className="text-left py-2 pr-4 font-medium">Votes</th>
+                    <th className="text-left py-2 pr-4 font-medium">Answers</th>
+                    <th className="text-left py-2 pr-4 font-medium">Views</th>
+                    <th className="text-left py-2 font-medium">Time</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {questions.map((q) => (
+                    <tr key={q.id} className="hover:bg-gray-50">
+                      <td className="py-2 pr-4 text-[#174a5f]">{q.title}</td>
+                      <td className="py-2 pr-4 text-gray-700">{q.author}</td>
+                      <td className="py-2 pr-4 text-gray-700">{q.votes}</td>
+                      <td className="py-2 pr-4 text-gray-700">{q.answers}</td>
+                      <td className="py-2 pr-4 text-gray-700">{q.views}</td>
+                      <td className="py-2 text-gray-500">{q.timeAgo}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
         ) : (
-          <div className="flex flex-col items-center justify-center gap-2 px-6 py-12">
-            <div className="relative w-48 h-48">
+          // Empty state (adjusted)
+          <div className="flex flex-col items-center justify-center gap-2 px-6 py-6 -mt-6">
+            <div className="relative w-32 h-32">
               <img
                 src="/assets/images/EmptyState.png"
                 alt="Empty State"
@@ -198,6 +270,7 @@ export function QAContent() {
         )}
       </div>
 
+      {/* Pagination (only when list exists) */}
       {showList && (
         <div className="shrink-0 bg-white pb-24">
           <div className="mx-auto max-w-4xl flex items-center justify-center gap-2 bg-white py-3 rounded-t-lg">

@@ -232,7 +232,7 @@ export function CourseBottomBar({ activeSection, onSectionChange }: CourseBottom
   return (
     <>
       {/* Fixed bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-[#174a5f] py-2 px-4">
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-[#174a5f] py-2 px-4 rounded-t-3xl">
         <div className="flex items-center justify-between gap-2 max-w-[1400px] mx-auto">
           <button
             onClick={() => setIsModalOpen(true)}
