@@ -180,7 +180,9 @@ const CourseLayout: React.FC<CourseLayoutProps> = ({ children, onSwitchToDemo, o
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 container mx-auto px-4 md:px-6 lg:px-8 pt-2 pb-4 bg-white max-w-7xl">
+      <main className={`flex-1 container mx-auto px-4 md:px-6 lg:px-8 pb-4 bg-white max-w-7xl transition-all duration-300 ${
+        showSecondaryNav ? 'pt-2' : 'pt-8'
+      }`}>
         {children}
       </main>
       
