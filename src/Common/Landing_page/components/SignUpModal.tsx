@@ -56,7 +56,7 @@ export default function SignUpModal({ isOpen, onClose, onSwitchToLogin }: SignUp
         </div>
 
         <div className="w-full mt-5 flex flex-col gap-3">
-          {/* First Name */}
+
           <div className="flex flex-col">
             <label
               htmlFor="first-name"
@@ -73,7 +73,6 @@ export default function SignUpModal({ isOpen, onClose, onSwitchToLogin }: SignUp
             />
           </div>
 
-          {/* Last Name */}
           <div className="flex flex-col">
             <label
               htmlFor="last-name"
@@ -90,7 +89,6 @@ export default function SignUpModal({ isOpen, onClose, onSwitchToLogin }: SignUp
             />
           </div>
 
-          {/* Username */}
           <div className="flex flex-col">
             <label
               htmlFor="signup-username"
@@ -107,7 +105,6 @@ export default function SignUpModal({ isOpen, onClose, onSwitchToLogin }: SignUp
             />
           </div>
 
-          {/* Continue Button */}
           <button
             type="button"
             className="w-full h-11 rounded-[6px] bg-[#174A5F] text-white text-sm font-['Poppins'] font-semibold"
@@ -115,7 +112,6 @@ export default function SignUpModal({ isOpen, onClose, onSwitchToLogin }: SignUp
             Continue
           </button>
 
-          {/* Divider */}
           <div className="flex items-center w-full justify-center my-2 text-center text-xs">
             <span className="text-[#DDDDDD] font-['Nunito_Sans'] font-semibold">-------------</span>
             <span className="px-2 text-[#A1A1A1] font-['Nunito_Sans'] font-regular">
@@ -124,7 +120,6 @@ export default function SignUpModal({ isOpen, onClose, onSwitchToLogin }: SignUp
             <span className="text-[#DDDDDD] font-['Nunito_Sans'] font-semibold">-------------</span>
           </div>
 
-          {/* Social Icons */}
           <div className="flex justify-center mt-1 w-full">
             <div className="flex items-center justify-center border border-[#DED2D9] rounded-[6px] h-10 w-full px-3 bg-white space-x-2">
               <img src="/assets/icons/google.svg" alt="Google" width={24} height={24} />
@@ -134,7 +129,6 @@ export default function SignUpModal({ isOpen, onClose, onSwitchToLogin }: SignUp
             </div>
           </div>
 
-          {/* Footer */}
           <div className="flex justify-center items-center mt-8 gap-2 text-sm">
             <span className="text-[#828282]" style={{ fontFamily: 'Poppins', fontWeight: 400 }}>
               Already have an account?

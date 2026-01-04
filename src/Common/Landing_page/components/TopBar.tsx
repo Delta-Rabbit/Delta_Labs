@@ -50,7 +50,6 @@ export default function TopBar() {
         </div>
       </header>
 
-      {/* Modals */}
       <AIBotModal isOpen={isAIModalOpen} onClose={() => setIsAIModalOpen(false)} />
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
       <SignUpModal isOpen={isSignUpModalOpen} onClose={() => setIsSignUpModalOpen(false)} />
