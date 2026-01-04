@@ -30,7 +30,17 @@ const features = [
   "Help and Support",
 ]
 
-export default function LeftSidebar() {
+interface LeftSidebarProps {
+  onCourseClick?: () => void;
+}
+
+export default function LeftSidebar({ onCourseClick }: LeftSidebarProps) {
+  const handleFeatureClick = (feature: string) => {
+    if (feature === "Course" && onCourseClick) {
+      onCourseClick();
+    }
+  };
+
   return (
     <aside
       className="
@@ -70,6 +80,7 @@ export default function LeftSidebar() {
           {features.map((feature, index) => (
             <button
               key={`${feature}-${index}`}
+              onClick={() => handleFeatureClick(feature)}
               className="
                 border 
                 border-[#174A5F] 
@@ -82,6 +93,7 @@ export default function LeftSidebar() {
                 transition 
                 hover:bg-[#174A5F] 
                 hover:text-white
+                cursor-pointer
               "
               style={{ fontFamily: "Poppins", fontWeight: 500 }}
             >

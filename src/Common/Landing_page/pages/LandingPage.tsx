@@ -9,17 +9,15 @@ import VideoFeed from '../components/VideoFeed';
 import AudioFeed from '../components/AudioFeed';
 import BotChat from '../components/BotChat';
 import SimulationCalculator from '../components/SimulationCalculator';
-import AIBotModal from '../components/AIBotModal';
-import LoginModal from '../components/LoginModal';
-import SignUpModal from '../components/SignUpModal';
 import CommentsView from '../components/CommentsView';
 
 interface LandingPageProps {
   onNavigateToCourse?: () => void;
+  onLoginClick?: () => void;
+  onSignUpClick?: () => void;
 }
 
-export default function LandingPage({ onNavigateToCourse }: LandingPageProps = {}) {
-  // TODO: Connect onNavigateToCourse to TopBar or LoginModal when ready
+export default function LandingPage({ onNavigateToCourse, onLoginClick, onSignUpClick }: LandingPageProps = {}) {
   const [currentFeed, setCurrentFeed] = useState<'video' | 'audio' | 'bot' | 'simulation'>('video');
   const [showComments, setShowComments] = useState(false);
 
@@ -33,7 +31,7 @@ export default function LandingPage({ onNavigateToCourse }: LandingPageProps = {
 
   return (
     <div className="flex flex-col h-screen bg-D9D9D9 text-white">
-      <TopBar />
+      <TopBar onLoginClick={onLoginClick} onSignUpClick={onSignUpClick} />
 
       <div className="flex flex-1 overflow-hidden">
 
@@ -47,7 +45,7 @@ export default function LandingPage({ onNavigateToCourse }: LandingPageProps = {
             </div>
           ) : (
             
-            <LeftSidebar />
+            <LeftSidebar onCourseClick={onNavigateToCourse} />
           )}
         </div>
 
@@ -109,10 +107,6 @@ export default function LandingPage({ onNavigateToCourse }: LandingPageProps = {
           )}
         </div>
       </div>
-
-      <AIBotModal />
-      <LoginModal />
-      <SignUpModal />
     </div>
   );
 }

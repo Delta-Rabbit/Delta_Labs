@@ -35,24 +35,7 @@ const CourseModuleContent = () => {
 // ============================================================================
 
 export function TabContentRouter() {
-  const { tabs, getActiveTab } = useTab();
-  const activeTab = getActiveTab();
-
-  // Check if there's an active course tab
-  const hasActiveCourseTab = activeTab && activeTab.module === 'course';
-  
-  // If no active tab or active tab is not a course tab, show empty state
-  if (!hasActiveCourseTab) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-secondary">
-        <div className="text-center">
-          <p className="text-gray-500">No active course tab. Open a course to continue.</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Render Course module only if there's an active course tab
+  // Always render Course module - it will auto-open a tab if needed
   return (
     <CourseProvider>
       <CourseModuleContent />

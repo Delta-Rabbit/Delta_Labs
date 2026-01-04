@@ -29,7 +29,7 @@ export function NavigationLayout({ children, onBackToLanding }: NavigationLayout
   return (
     <div className="min-h-screen">
       {/* Top Header Bar */}
-      <nav className="w-full bg-[#174A5F] text-white shadow-lg sticky top-0 z-40">
+      <nav className="w-full bg-[#174A5F] text-white shadow-lg fixed top-0 left-0 right-0 z-40">
         <div className="flex items-center h-[60px] px-2 sm:px-4 gap-2 sm:gap-4 relative">
           {/* Left Section: Menu & Logo */}
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 mr-4">
@@ -114,7 +114,7 @@ export function NavigationLayout({ children, onBackToLanding }: NavigationLayout
       )}
 
       {/* Content Area */}
-      <div className="min-h-[calc(100vh-60px)]">
+      <div className="min-h-[calc(100vh-60px)] pt-[60px]">
         {children}
       </div>
 

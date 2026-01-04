@@ -58,12 +58,13 @@ const CourseLayout: React.FC<CourseLayoutProps> = ({ children, onSwitchToDemo, o
       )}
 
       {/* Secondary Navigation Bar - Course Module Specific */}
-      <div className={`bg-white relative z-30 sticky top-[60px] transition-all duration-300 ease-in-out ${
+      {/* Secondary Navigation Bar - Course Module Specific */}
+      <div className={`bg-white z-30 sticky top-[60px] left-0 right-0 transition-all duration-300 ease-in-out ${
         showSecondaryNav 
           ? 'opacity-100 translate-y-0 max-h-screen pointer-events-auto' 
           : 'opacity-0 translate-y-[-100%] max-h-0 pointer-events-none overflow-hidden'
       }`}>
-        <div className="container mx-auto px-4 md:px-8 py-3 md:py-4">
+        <div className="container mx-auto px-4 md:px-8 py-6">
           <div className="flex items-center justify-center overflow-x-auto">
             {/* Navigation Tabs */}
             <div className="flex items-center space-x-6 md:space-x-8 flex-shrink-0">
@@ -179,7 +180,7 @@ const CourseLayout: React.FC<CourseLayoutProps> = ({ children, onSwitchToDemo, o
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 container mx-auto px-4 md:px-6 lg:px-8 py-4 bg-white max-w-7xl">
+      <main className="flex-1 container mx-auto px-4 md:px-6 lg:px-8 pt-2 pb-4 bg-white max-w-7xl">
         {children}
       </main>
       
