@@ -1,45 +1,24 @@
 import { useState } from "react";
-import { AuthModal, AuthProvider } from "./modules/Auth";
+import { AuthProvider } from "./modules/Auth";
 import { TabProvider } from "./contexts/TabContext";
 import { TabContentRouter } from "./components/TabContentRouter";
 import { NavigationLayout } from "./components/NavigationLayout";
-import { CourseModuleButton } from "./components/CourseModuleButton";
+import LandingPage from "./Common/Landing_page/pages/LandingPage";
 
 function App() {
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [currentView, setCurrentView] = useState<'course' | 'demo'>('demo');
+  const [currentView, setCurrentView] = useState<'landing' | 'course'>('landing');
 
   return (
     <AuthProvider>
       <TabProvider>
-        {/* Demo View - For testing Auth */}
-        {currentView === 'demo' && (
-          <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="text-center space-y-6">
-              <h1 className="text-3xl font-bold text-primary-600">Delta Labs</h1>
-              <div className="flex items-center justify-center space-x-4">
-                <button
-                  onClick={() => setShowAuthModal(true)}
-                  className="px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
-                >
-                  Auth Modal
-                </button>
-                
-                <CourseModuleButton onClick={() => setCurrentView('course')} />
-              </div>
-              
-              <AuthModal 
-                isOpen={showAuthModal} 
-                onClose={() => setShowAuthModal(false)}
-                defaultType="login"
-              />
-            </div>
-          </div>
+        {/* Landing Page - Entry Point */}
+        {currentView === 'landing' && (
+          <LandingPage onNavigateToCourse={() => setCurrentView('course')} />
         )}
 
-        {/* Tab-based view - Main View */}
+        {/* Course Module - Main Application */}
         {currentView === 'course' && (
-          <NavigationLayout>
+          <NavigationLayout onBackToLanding={() => setCurrentView('landing')}>
             <TabContentRouter />
           </NavigationLayout>
         )}

@@ -8,7 +8,14 @@ import AIBotModal from '../components/AIBotModal';
 import LoginModal from '../components/LoginModal';
 import SignUpModal from '../components/SignUpModal';
 
-export default function LandingPage() {
+interface LandingPageProps {
+  onNavigateToCourse?: () => void;
+}
+
+export default function LandingPage({ onNavigateToCourse }: LandingPageProps) {
+  // TODO: Connect navigation when TopBar or LoginModal components are updated
+  // For now, LandingPage handles its own modals
+  
   return (
     <div className="flex flex-col h-screen bg-D9D9D9 text-white">
       <TopBar />
