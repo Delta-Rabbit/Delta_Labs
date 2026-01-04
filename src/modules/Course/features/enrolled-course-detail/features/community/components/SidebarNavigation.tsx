@@ -4,7 +4,7 @@
  * Following QA module design pattern
  */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import type { CommunityView } from '../types';
 
 interface SidebarNavigationProps {
@@ -15,7 +15,7 @@ interface SidebarNavigationProps {
 
 interface NavItem {
   id: CommunityView;
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   ariaLabel: string;
 }
